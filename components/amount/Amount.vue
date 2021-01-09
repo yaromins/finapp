@@ -6,6 +6,10 @@ export default {
       required: true
     },
 
+    baseValue: {
+      type: Number
+    },
+
     currency: {
       type: String,
       required: true
@@ -104,7 +108,7 @@ export default {
   template(v-if="showBase && (value !== 0) && (currency !== $store.state.currencies.base)")
     .amountItem._base(:class="className")
       .amountItem__prefix(v-if="isShowPrefix && value !== 0") {{ type === 0 ? '-' : '+' }}
-      .amountItem__value {{ amountInBaseCurrency }}
+      .amountItem__value {{ baseValue }}
       .amountItem__symbol {{ getCurrencySymbol($store.state.currencies.base) }}
 </template>
 

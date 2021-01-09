@@ -196,6 +196,7 @@ export default {
           :currency="wallet.currency"
           :type="trn.type"
           :value="trn.amount"
+          :baseValue="trn.baseValue"
           vertical="center"
           size="xl"
           isShowPrefix
@@ -222,6 +223,7 @@ export default {
           Amount(
             :currency="wallet.currency"
             :value="trn.amount"
+            :baseValue="trn.baseValue"
             :type="trn.type"
             isShowPrefix
           )
@@ -259,6 +261,7 @@ export default {
           Amount(
             :currency="wallet.currency"
             :value="trn.amount"
+            :baseValue="trn.baseValue"
             :type="trn.type"
             :isColorize="trn.type === 1"
             isShowPrefix

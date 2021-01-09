@@ -83,6 +83,7 @@ export default {
       Amount(
         :currency="wallet.currency"
         :value="trn.amount"
+        :baseValue="trn.baseValue"
         :type="trn.type"
       )
 </template>

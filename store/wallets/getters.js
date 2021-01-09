@@ -12,6 +12,15 @@ export default {
     return false
   },
 
+  getWalletCurrency: (state, getters, rootState) => (walletId) => {
+    return rootState.wallets.items[walletId].currency
+  },
+
+  getWalletsCurrencies (state, getters, rootState) {
+    if (!getters.hasWallets) { return [] }
+    return Object.keys(rootState.wallets.items).map( walletId => rootState.wallets.items[walletId].currency)
+  },
+
   // getWalletAmount
   getWalletAmount: (state, getters, rootState, rootGetters) => (walletId) => {
     const trns = rootState.trns.items

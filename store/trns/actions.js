@@ -20,14 +20,19 @@ export default {
     * @param {string} {}.values.amount
     * @param {string} {}.values.category
   */
-  addTrn ({ commit, rootState }, { id, values }) {
+  addTrn ({ commit, rootState, rootGetters }, { id, values }) {
     const uid = rootState.user.user.uid
     const trns = rootState.trns.items
     let isTrnSavedOnline = false
+    const amount = Number(String(values.amount).replace(/\s+/g, ''))
+    const currency = rootGetters['wallets/getWalletCurrency'](values.walletId)
+    const date = dayjs(values.date)
+    const baseValue = rootGetters['currencies/getAmountInBaseCurrency']({amount, currency})
     const formatedTrnValues = {
-      amount: Number(String(values.amount).replace(/\s+/g, '')),
+      amount,
+      baseValue,
       categoryId: values.categoryId,
-      date: dayjs(values.date).valueOf(),
+      date: date.valueOf(),
       description: values.description || null,
       edited: dayjs().valueOf(),
       groups: values.groups || null,
@@ -41,6 +46,19 @@ export default {
     db.ref(`users/${uid}/trns/${id}`)
       .set(formatedTrnValues)
       .then(() => {
+        // if transaction is not from today let adjust the baseValue if rate is present in archive
+        if (!dayjs().isSame(date, 'day')) {
+          const asOfDate = date.format('YYYYMMDD')
+          const baseCurrency = rootState.currencies.base
+          db.ref(`currencies/${baseCurrency}/archive/${asOfDate}/${currency}`).once('value').then((snapshot) => {
+            const rateFromArchive = snapshot.val()
+            if (rateFromArchive) {
+              const fixedBaseValue = { ...formatedTrnValues }
+              fixedBaseValue.baseValue = formatedTrnValues.amount / rateFromArchive
+              db.ref(`users/${uid}/trns/${id}`).set(fixedBaseValue)
+            }
+          })
+        }
         isTrnSavedOnline = true
         removeTrnToAddLaterLocal(id)
       })
@@ -98,6 +116,7 @@ export default {
             db.ref(`users/${uid}/trns/${trnId}`)
               .set({
                 amount: trn.amount,
+                baseValue: trn.baseValue || 0,
                 categoryId: trn.categoryId,
                 date: Number(trn.date),
                 description: trn.description || null,

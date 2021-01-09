@@ -189,6 +189,11 @@ export default {
   },
 
   build: {
-    extractCSS: true
+    extractCSS: true,
+    extend(config, ctx) {
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
+    }
   }
 }

@@ -37,7 +37,7 @@ export default {
         if (wallet && currencies) {
           let amount = 0
           if (wallet.currency !== baseCurrency) {
-            amount = Math.abs(trn.amount / currencies[wallet.currency])
+            amount = trn.baseValue
           }
           else {
             amount = trn.amount

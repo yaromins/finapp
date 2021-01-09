@@ -4,7 +4,7 @@ import { getRatesOf } from './api'
 import { db } from '~/services/firebaseConfig'
 
 export default {
-  async initCurrencies ({ rootState, commit }) {
+  async initCurrencies ({ rootGetters, rootState, commit }) {
     const uid = rootState.user.user.uid
     const today = dayjs().valueOf()
 
@@ -13,17 +13,28 @@ export default {
     const userCurrency = userCurrencyReq.val() || 'RUB'
 
     // rates of base currency
-    const currencyRateReq = await db.ref(`currencies/${userCurrency}`).once('value')
+    const currencyRateReq = await db.ref(`currencies/${userCurrency}/latest`).once('value')
     const currencyRate = currencyRateReq.val() || {}
 
     let rates = currencyRate.rates
     const isCurrencyUpdatedToday = dayjs(today).isSame(currencyRate.date, 'day')
+    const filterRatesWithUsedCurrencies = (rates, userBaseCurrency) => {
+      const usedRates = {} 
+      const usedCurrencies = rootGetters['wallets/getWalletsCurrencies'].filter( cur => cur != userBaseCurrency)
+      usedCurrencies.forEach(currency => usedRates[currency] = rates[currency])
+      return usedRates
+    }
 
-    // get new rates
     if (!currencyRate.rates || !isCurrencyUpdatedToday) {
+      // save old rates to archive first
+      if (currencyRate.rates) {
+        const date = dayjs(currencyRate.date).format('YYYYMMDD')
+        db.ref(`currencies/${userCurrency}/archive/${date}`).set(currencyRate.rates)
+      }
+      // get and save new rates
       rates = await getRatesOf(userCurrency)
-      db.ref(`currencies/${userCurrency}`).set({
-        rates,
+      db.ref(`currencies/${userCurrency}/latest`).set({
+        rates: filterRatesWithUsedCurrencies(rates, userCurrency),
         date: today
       })
     }
