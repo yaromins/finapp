@@ -18,12 +18,6 @@ export default {
 
     let rates = currencyRate.rates
     const isCurrencyUpdatedToday = dayjs(today).isSame(currencyRate.date, 'day')
-    const filterRatesWithUsedCurrencies = (rates, userBaseCurrency) => {
-      const usedRates = {} 
-      const usedCurrencies = rootGetters['wallets/getWalletsCurrencies'].filter( cur => cur != userBaseCurrency)
-      usedCurrencies.forEach(currency => usedRates[currency] = rates[currency])
-      return usedRates
-    }
 
     if (!currencyRate.rates || !isCurrencyUpdatedToday) {
       // save old rates to archive first
@@ -34,7 +28,7 @@ export default {
       // get and save new rates
       rates = await getRatesOf(userCurrency)
       db.ref(`currencies/${userCurrency}/latest`).set({
-        rates: filterRatesWithUsedCurrencies(rates, userCurrency),
+        rates,
         date: today
       })
     }
