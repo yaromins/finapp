@@ -1,6 +1,7 @@
 # Files
 ftp.config.js
 .firebase
+.firebaserc
 .history
 
 # Created by .ignore support plugin (hsz.mobi)
@@ -93,3 +94,6 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Visual Studio Code
+.vscode
