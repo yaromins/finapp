@@ -13,7 +13,7 @@ export default {
     const userCurrency = userCurrencyReq.val() || 'RUB'
 
     // rates of base currency
-    const currencyRateReq = await db.ref(`currencies/${userCurrency}/latest`).once('value')
+    const currencyRateReq = await db.ref(`currencies/${userCurrency}`).once('value')
     const currencyRate = currencyRateReq.val() || {}
 
     let rates = currencyRate.rates
@@ -23,11 +23,11 @@ export default {
       // save old rates to archive first
       if (currencyRate.rates) {
         const date = dayjs(currencyRate.date).format('YYYYMMDD')
-        db.ref(`currencies/${userCurrency}/archive/${date}`).set(currencyRate.rates)
+        db.ref(`currencies/_archive/${userCurrency}/${date}`).set(currencyRate.rates)
       }
       // get and save new rates
       rates = await getRatesOf(userCurrency)
-      db.ref(`currencies/${userCurrency}/latest`).set({
+      db.ref(`currencies/${userCurrency}`).set({
         rates,
         date: today
       })
