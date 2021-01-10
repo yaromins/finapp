@@ -1,5 +1,5 @@
 <script>
-import { db } from '~/services/firebaseConfig'
+import { db } from '~/services/firebase'
 import generateId from '~/utils/id'
 import colors from '~/assets/js/colors'
 import icons from '~/assets/js/icons'

@@ -7,7 +7,7 @@ import {
   saveTrnIDforDeleteWhenClientOnline,
   removeTrnToDeleteLaterLocal
 } from './helpers'
-import { db } from '~/services/firebaseConfig'
+import { db } from '~/services/firebase'
 
 export default {
   /**

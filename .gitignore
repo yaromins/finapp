@@ -3,6 +3,8 @@ ftp.config.js
 .firebase
 .firebaserc
 .history
+services/firebaseConfig.js
+
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template

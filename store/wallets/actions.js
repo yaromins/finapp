@@ -1,5 +1,5 @@
 import localforage from 'localforage'
-import { db } from '~/services/firebaseConfig'
+import { db } from '~/services/firebase'
 
 export default {
   addWallet ({ dispatch, rootState, getters }, { id, values }) {

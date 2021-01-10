@@ -1,5 +1,5 @@
 import localforage from 'localforage'
-import { app } from '~/services/firebaseConfig'
+import { app } from '~/services/firebase'
 
 export default {
   async initApp ({ rootState, commit, dispatch }) {
