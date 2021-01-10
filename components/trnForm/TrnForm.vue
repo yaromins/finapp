@@ -131,16 +131,29 @@ export default {
 
     handleSubmitTrnasfer () {
       const values = {
-        amount: this.$store.state.trnForm.values.amount,
         categoryId: this.$store.getters['categories/transferCategoryId'],
         date: this.$day(this.$store.state.trnForm.values.date).valueOf()
       }
+      // transfer transaction would genereate two individual transactions
+      // with reference to each other (transferTrnId). So that delete of one 
+      // referenced transaction would delete the other one as well to avoid
+      // broken balances
+      const trnIdFrom = generateId(this.$day().valueOf())
+      const trnIdTo = generateId(this.$day().valueOf())
+      const wallets = this.$store.state.wallets.items
+      const formTransferValues = this.$store.state.trnForm.transfer
+      const walletFrom = wallets[formTransferValues.from]
+      const walletTo = wallets[formTransferValues.to]
+      const amount = this.$store.state.trnForm.values.amount
+      const amountTo = this.$store.getters['currencies/getConvertedAmount']({ amount, fromCurrency: walletFrom.currency, toCurrency: walletTo.currency })
 
       // Income
       this.$store.dispatch('trns/addTrn', {
-        id: generateId(this.$day().valueOf()),
+        id: trnIdTo,
         values: {
           ...values,
+          amount: amountTo,
+          transferTrnId: trnIdFrom,
           walletId: this.$store.state.trnForm.transfer.to,
           amountType: 1
         }
@@ -148,9 +161,11 @@ export default {
 
       // Expense
       this.$store.dispatch('trns/addTrn', {
-        id: generateId(this.$day().valueOf()),
+        id: trnIdFrom,
         values: {
           ...values,
+          amount,
+          transferTrnId: trnIdTo,
           walletId: this.$store.state.trnForm.transfer.from,
           amountType: 0
         }
@@ -232,18 +247,6 @@ export default {
             type: 'error',
             title: '😮',
             text: 'Transfer in same wallet'
-          })
-          return false
-        }
-
-        const walletFrom = wallets[formTransferValues.from]
-        const walletTo = wallets[formTransferValues.to]
-
-        if (walletFrom.currency !== walletTo.currency) {
-          this.$notify({
-            type: 'error',
-            title: '🤷',
-            text: 'Sorry, transfer between wallets with different currency in development'
           })
           return false
         }

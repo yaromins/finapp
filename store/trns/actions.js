@@ -20,14 +20,14 @@ export default {
     * @param {string} {}.values.amount
     * @param {string} {}.values.category
   */
-  addTrn ({ commit, rootState, rootGetters }, { id, values }) {
+  addTrn({ commit, rootState, rootGetters }, { id, values }) {
     const uid = rootState.user.user.uid
     const trns = rootState.trns.items
     let isTrnSavedOnline = false
     const amount = Number(String(values.amount).replace(/\s+/g, ''))
     const currency = rootGetters['wallets/getWalletCurrency'](values.walletId)
     const date = dayjs(values.date)
-    const baseValue = rootGetters['currencies/getAmountInBaseCurrency']({amount, currency})
+    const baseValue = rootGetters['currencies/getAmountInBaseCurrency']({ amount, currency })
     const formatedTrnValues = {
       amount,
       baseValue,
@@ -39,7 +39,10 @@ export default {
       type: Number(values.amountType) || 0,
       walletId: values.walletId
     }
-
+    // is this part of transfer transaction?
+    if (values.transferTrnId) {
+      formatedTrnValues.transferTrnId = values.transferTrnId
+    }
     localforage.setItem('finapp.trns', { ...trns, [id]: formatedTrnValues })
     commit('setTrns', Object.freeze({ ...trns, [id]: formatedTrnValues }))
 
@@ -54,7 +57,7 @@ export default {
             const rate = snapshot.val()
             if (rate) {
               const fixedBaseValue = { ...formatedTrnValues }
-              fixedBaseValue.baseValue = rootGetters['currencies/getAmountInBaseCurrency']({amount, currency, rate})
+              fixedBaseValue.baseValue = rootGetters['currencies/getAmountInBaseCurrency']({ amount, currency, rate })
               db.ref(`users/${uid}/trns/${id}`).set(fixedBaseValue)
             }
           })
@@ -76,21 +79,43 @@ export default {
   },
 
   // delete
-  deleteTrn ({ commit, rootState }, id) {
+  deleteTrn({ commit, dispatch, rootState }, id) {
+    const uid = rootState.user.user.uid
+    const trns = { ...rootState.trns.items }
+    const trn = trns[id];
+
+    // is this part of transfer transaciton?
+    if (trn.transferTrnId) {  
+      dispatch('deleteTransferTrn', [id, trn.transferTrnId])
+    } else {
+      // proceed with single transaction delete
+      delete trns[id]
+      commit('setTrns', Object.freeze(trns))
+      localforage.setItem('finapp.trns', trns)
+      saveTrnIDforDeleteWhenClientOnline(id)
+
+      db.ref(`users/${uid}/trns/${id}`)
+        .remove()
+        .then(() => removeTrnToDeleteLaterLocal(id))
+    }
+  },
+
+  deleteTransferTrn({ commit, rootState }, ids) {
     const uid = rootState.user.user.uid
     const trns = { ...rootState.trns.items }
 
-    delete trns[id]
+    ids.forEach( id => delete trns[id])
     commit('setTrns', Object.freeze(trns))
     localforage.setItem('finapp.trns', trns)
-    saveTrnIDforDeleteWhenClientOnline(id)
-
-    db.ref(`users/${uid}/trns/${id}`)
+    ids.forEach( id => {
+      saveTrnIDforDeleteWhenClientOnline(id)
+      db.ref(`users/${uid}/trns/${id}`)
       .remove()
       .then(() => removeTrnToDeleteLaterLocal(id))
+    })
   },
 
-  async deleteTrnsByIds ({ rootState }, trnsIds) {
+  async deleteTrnsByIds({ rootState }, trnsIds) {
     const uid = rootState.user.user.uid
     const trnsForDelete = {}
     for (const trnId of trnsIds) {
@@ -103,7 +128,7 @@ export default {
   },
 
   // init
-  async initTrns ({ rootState, dispatch, commit }) {
+  async initTrns({ rootState, dispatch, commit }) {
     const uid = rootState.user.user.uid
 
     await db.ref(`users/${uid}/trns`).on('value', (snapshot) => {
@@ -133,12 +158,12 @@ export default {
     }, e => console.error(e))
   },
 
-  setTrns ({ commit }, items) {
+  setTrns({ commit }, items) {
     commit('setTrns', items)
     localforage.setItem('finapp.trns', items)
   },
 
-  unsubcribeTrns ({ rootState }) {
+  unsubcribeTrns({ rootState }) {
     const uid = rootState.user.user.uid
     db.ref(`users/${uid}/trns`).off()
   },
@@ -150,7 +175,7 @@ export default {
     * get trns from local storage
     * and add them to database
   */
-  uploadOfflineTrns ({ dispatch, rootState }) {
+  uploadOfflineTrns({ dispatch, rootState }) {
     db.ref('.info/connected').on('value', async (snap) => {
       const isConnected = snap.val()
       if (isConnected) {
