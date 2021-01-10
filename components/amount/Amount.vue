@@ -63,7 +63,8 @@ export default {
     },
 
     amountInBaseCurrency () {
-      const baseValue = this.$store.getters['currencies/getAmountInBaseCurrency']({ amount: this.value, currency: this.currency })
+      // use historical value if present or calculate at runtime
+      const baseValue = this.baseValue ? this.baseValue : this.$store.getters['currencies/getAmountInBaseCurrency']({ amount: this.value, currency: this.currency })
       if (baseValue) {
         return this.formatAmount(baseValue, '0')
       }
@@ -108,7 +109,7 @@ export default {
   template(v-if="showBase && (value !== 0) && (currency !== $store.state.currencies.base)")
     .amountItem._base(:class="className")
       .amountItem__prefix(v-if="isShowPrefix && value !== 0") {{ type === 0 ? '-' : '+' }}
-      .amountItem__value {{ baseValue }}
+      .amountItem__value {{ amountInBaseCurrency }}
       .amountItem__symbol {{ getCurrencySymbol($store.state.currencies.base) }}
 </template>
 
