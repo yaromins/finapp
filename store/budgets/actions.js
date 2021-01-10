@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { db } from '~/services/firebaseConfig'
+import { db } from '~/services/firebase'
 import generateId from '~/utils/id'
 
 export default {

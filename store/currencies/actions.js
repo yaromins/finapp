@@ -1,7 +1,7 @@
 import localforage from 'localforage'
 import dayjs from 'dayjs'
 import { getRatesOf } from './api'
-import { db } from '~/services/firebaseConfig'
+import { db } from '~/services/firebase'
 
 export default {
   async initCurrencies ({ rootGetters, rootState, commit }) {

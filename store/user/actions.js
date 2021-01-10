@@ -2,7 +2,7 @@ import firebase from 'firebase/app'
 import localforage from 'localforage'
 import dayjs from 'dayjs'
 
-import { db } from '~/services/firebaseConfig'
+import { db } from '~/services/firebase'
 import pkg from '~/package'
 
 export default {

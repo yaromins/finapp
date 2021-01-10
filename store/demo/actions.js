@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { db } from '~/services/firebaseConfig'
+import { db } from '~/services/firebase'
 
 export default {
   async getDemoDataStatus ({ commit }) {

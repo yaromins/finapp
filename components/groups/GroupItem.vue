@@ -1,6 +1,6 @@
 <script>
 import { formatDate } from '~/utils/formatDate'
-import { db } from '~/services/firebaseConfig'
+import { db } from '~/services/firebase'
 
 export default {
   props: {
