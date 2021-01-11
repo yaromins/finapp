@@ -88,7 +88,7 @@ export default {
 
     updateHeight () {
       this.$nextTick(() => {
-        this.headerHeight = this.$refs.header.clientHeight
+        this.headerHeight = this.$refs.header ? this.$refs.header.clientHeight : 0
       })
     },
 

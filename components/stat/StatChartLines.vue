@@ -54,7 +54,8 @@ export default {
       const vm = this
 
       // diff periods from oldest trn and today
-      const oldestTrnDate = this.$day(trns[this.$store.getters['trns/firstCreatedTrnId']].date).endOf(periodName)
+      const firstCreatedTrnId = this.$store.getters['trns/firstCreatedTrnId']
+      const oldestTrnDate = firstCreatedTrnId ? this.$day(trns[firstCreatedTrnId].date).endOf(periodName) : Date()
       let periodsToShow = this.$day().endOf(periodName).diff(oldestTrnDate, periodName) + 1
       const periodsWantToShow = chartPeriods[periodName].showedPeriods
       periodsToShow = periodsWantToShow >= periodsToShow ? periodsToShow : periodsWantToShow
