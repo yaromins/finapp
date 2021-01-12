@@ -53,7 +53,7 @@ export default {
         if (!dayjs().isSame(date, 'day')) {
           const asOfDate = date.format('YYYYMMDD')
           const baseCurrency = rootState.currencies.base
-          db.ref(`currencies/_archive/${baseCurrency}/${asOfDate}/${currency}`).once('value').then((snapshot) => {
+          db.ref(`currencies_archive/${baseCurrency}/${asOfDate}/${currency}`).once('value').then((snapshot) => {
             const rate = snapshot.val()
             if (rate) {
               const fixedBaseValue = { ...formatedTrnValues }

@@ -23,7 +23,7 @@ export default {
       // save old rates to archive first
       if (currencyRate.rates) {
         const date = dayjs(currencyRate.date).format('YYYYMMDD')
-        db.ref(`currencies/_archive/${userCurrency}/${date}`).set(currencyRate.rates)
+        db.ref(`currencies_archive/${userCurrency}/${date}`).set(currencyRate.rates)
       }
       // get and save new rates
       rates = await getRatesOf(userCurrency)

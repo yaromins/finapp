@@ -61,6 +61,10 @@ $ npm install
       ".read": "auth != null",
       ".write": "auth != null"
     },
+      "currencies_archive": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
     "users-info": {
       "$uid": {
         ".read": "auth != null && auth.uid == $uid",
