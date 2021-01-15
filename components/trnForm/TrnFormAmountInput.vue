@@ -17,7 +17,7 @@ export default {
       return this.$store.state.trnForm.show
     },
 
-    amounIsNumber () {
+    amountIsNumber () {
       if (!this.amountString || this.amountString == 0) { return true }
       const amountString = String(this.amountString).replace(/\s/g, '')
       if (Number(amountString)) {
@@ -156,7 +156,7 @@ export default {
         @onClick="handleMath"
       )
 
-    template(v-if="amounIsNumber")
+    template(v-if="amountIsNumber")
       Button(
         v-if="$store.state.trnForm.values.trnId"
         title="Edit transaction"
@@ -172,7 +172,7 @@ export default {
         @onClick="$emit('onFormSubmit')"
       )
 
-    template(v-if="amountString && !amounIsNumber")
+    template(v-if="amountString && !amountIsNumber")
       Button(
         className="_blue _text-center"
         size="lg"

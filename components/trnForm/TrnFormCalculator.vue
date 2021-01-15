@@ -7,7 +7,7 @@ export default {
       return String(this.$store.state.trnForm.values.amount)
     },
 
-    amounIsNumber () {
+    amountIsNumber () {
       if (this.amountString == 0) { return true }
       return Number(this.unlocalize(this.amountString))
     },
@@ -231,11 +231,11 @@ export default {
     .calcItem__in {{decimalSeparator}}
 
   .calcItem._sum(
-    @click="amounIsNumber ? $emit('onFormSubmit') : handleMath()"
+    @click="amountIsNumber ? $emit('onFormSubmit') : handleMath()"
     :class="{ _expenses: $store.state.trnForm.values.amountType === 0, _incomes: $store.state.trnForm.values.amountType === 1 }"
   )
     .calcItem__in
-      template(v-if="amounIsNumber")
+      template(v-if="amountIsNumber")
         .mdi.mdi-check
       template(v-else)
         .mdi.mdi-equal
