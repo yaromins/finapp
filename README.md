@@ -75,14 +75,18 @@ $ npm install
 }
 ```
 - Go to the Project Overview and click Add Firebase to your web app.
-- You need to replace config in app's directory `/src/firebase.js` with your properties.
-``` bash
-apiKey: 'YOUR_CONFIG',
-authDomain: 'YOUR_CONFIG',
-databaseURL: 'YOUR_CONFIG',
-projectId: 'YOUR_CONFIG',
-storageBucket: 'YOUR_CONFIG',
-messagingSenderId: 'YOUR_CONFIG'
+- You need to create config in app's directory `./services/firebaseConfig.js` with your properties.
+``` js
+const firebaseConfig = {
+  apiKey: 'YOUR_CONFIG',
+  authDomain: 'YOUR_CONFIG',
+  databaseURL: 'YOUR_CONFIG',
+  projectId: 'YOUR_CONFIG',
+  storageBucket: 'YOUR_CONFIG',
+  messagingSenderId: 'YOUR_CONFIG'
+};
+
+export default firebaseConfig;
 ```
 
 
