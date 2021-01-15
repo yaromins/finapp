@@ -1,5 +1,5 @@
 <script>
-import { evaluate } from 'mathjs'
+import { evaluate, round } from 'mathjs'
 
 export default {
   name: 'TrnFormAmountInput',
@@ -97,8 +97,8 @@ export default {
           isLastItemNumber
             ? sum = evaluate(amountString)
             : sum = evaluate(amountString.slice(0, -1))
-
-          return `${Math.round(Math.abs(sum))}`
+          
+          return `${round(Math.abs(sum),2)}`
         }
       }
       catch (error) {

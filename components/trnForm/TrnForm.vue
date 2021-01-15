@@ -186,7 +186,7 @@ export default {
 
     handleMath () {
       if (this.$store.state.trnForm.values.amountEvaluation) {
-        const amount = Number(this.$store.state.trnForm.values.amountEvaluation).toLocaleString('ru-RU')
+        const amount = Number(this.$store.state.trnForm.values.amountEvaluation).toLocaleString()
         this.$store.commit('trnForm/setTrnFormValues', {
           amount,
           amountEvaluation: null

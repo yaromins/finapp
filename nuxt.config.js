@@ -76,7 +76,8 @@ export default {
   plugins: [
     { src: '~/plugins/initAppFromCache' },
     { src: '~/plugins/dayjs' },
-    { src: '~/plugins/notifications' }
+    { src: '~/plugins/notifications' },
+    { src: '~/plugins/longpress' },
   ],
 
   loading: false,

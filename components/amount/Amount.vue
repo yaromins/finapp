@@ -93,7 +93,7 @@ export default {
     formatAmount (amount, fixedNumber = false) {
       const number = amount
       const fixed = fixedNumber || 2
-      return Number(`${number.toFixed(fixed)}`).toLocaleString('ru-RU')
+      return Number(`${number.toFixed(fixed)}`).toLocaleString()
     }
   }
 }

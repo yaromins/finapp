@@ -29,6 +29,7 @@ export default {
 
     let expenses = 0
     let incomes = 0
+    let missingBaseValue = 0
 
     for (const key of trnsIds) {
       const trn = trns[key]
@@ -37,7 +38,10 @@ export default {
         if (wallet && currencies) {
           let amount = 0
           if (wallet.currency !== baseCurrency) {
-            amount = trn.baseValue
+            amount = trn.baseValue ? trn.baseValue : rootGetters['currencies/getAmountInBaseCurrency']({ amount: trn.amount, currency: wallet.currency })
+            if (!trn.baseValue) {
+              missingBaseValue++
+            }
           }
           else {
             amount = trn.amount
@@ -46,6 +50,10 @@ export default {
           else { expenses = expenses + amount }
         }
       }
+    }
+    if (missingBaseValue>0) {
+      // TODO: add UI notification?
+      console.log(`${missingBaseValue} transactions missing baseValue`)
     }
     return {
       expenses: Math.abs(+expenses.toFixed(0)),

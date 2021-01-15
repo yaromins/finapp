@@ -1,5 +1,5 @@
 <script>
-import { evaluate } from 'mathjs'
+import { evaluate, round } from 'mathjs'
 
 export default {
   computed: {
@@ -9,7 +9,7 @@ export default {
 
     amounIsNumber () {
       if (this.amountString == 0) { return true }
-      return Number(String(this.amountString).replace(/\s+/g, ''))
+      return Number(this.unlocalize(this.amountString))
     },
 
     submitClassName () {
@@ -18,6 +18,10 @@ export default {
         _zero: +this.amountString === 0,
         _math: +this.amountString !== 0 && amountSplit.length > 1
       }
+    },
+
+    decimalSeparator () {
+      return new Number(1.01).toLocaleString()[1]
     },
 
     buttonName () {
@@ -32,25 +36,34 @@ export default {
   },
 
   methods: {
-    formatToAmountWithSpaces (value) {
-      return Number(Math.abs(value)).toLocaleString('ru-RU')
+
+    isNumber (value) {
+      const unlocalized = this.unlocalize(value)
+      return Number(unlocalized) == Number(unlocalized)
     },
 
     handlePress (event, eventType) {
       const amount = this.amountString
       const value = event.target.textContent
-      const isValueNumber = (/(\d)/).test(value)
+      const isValueNumber = this.isNumber(value)
       const amountSplit = amount.split(/(\/|\*|-|\+)/).filter(i => i)
-      const lastItem = [...amountSplit].reverse()[0]
-      const isLastItemNumber = (/(\d)/).test(lastItem)
-
+      const lastItem = this.unlocalize([...amountSplit].reverse()[0])
+      const isLastItemNumber = this.isNumber(lastItem)
+      
       // remove
+      if (eventType === 'dot' ) {
+        const combined = `${lastItem}${this.decimalSeparator}`
+        if (this.isNumber(combined)) {
+          this.setTrnFormAmount(`${amount}${this.decimalSeparator}`)
+        }
+      }
+
       if (eventType === 'remove') {
         if (amount.length > 1) {
           const amountWithouLastNumber = amountSplit.slice(0, -1).join('')
           if (lastItem.length > 1) {
-            const lastNumber = lastItem.replace(/\s+/g, '').slice(0, -1)
-            const formatedLastNumber = Number(lastNumber).toLocaleString('ru-RU')
+            const lastNumber = this.unlocalize(lastItem.slice(0, -1))
+            const formatedLastNumber = Number(lastNumber).toLocaleString()
             const combinedAmount = amountWithouLastNumber + formatedLastNumber
             this.setTrnFormAmount(combinedAmount)
           }
@@ -66,7 +79,7 @@ export default {
 
       // action
       if (eventType === 'action' && lastItem !== '0') {
-        if (isLastItemNumber && isLastItemNumber) {
+        if (isLastItemNumber) {
           this.setTrnFormAmount(`${amount}${value}`)
         }
         else {
@@ -84,42 +97,65 @@ export default {
         // usual number
         else if (isLastItemNumber) {
           if (lastItem.length < 15) {
+            const formatNumberToLocale = (value) => {
+              const formattedNumber = Number(value).toLocaleString()
+              if (value.endsWith(`${this.decimalSeparator}0`)) {
+                // to handle 0.01 case correctly
+                return `${formattedNumber}${this.decimalSeparator}0`
+              } 
+              return formattedNumber 
+            }
             // first number
             if (amountSplit.length === 1) {
-              const joinedAmount = amount.replace(/\s+/g, '') + value
-              const formatedAmount = Number(joinedAmount).toLocaleString('ru-RU')
+              const joinedAmount = this.unlocalize(amount + value)
+              const formatedAmount = formatNumberToLocale(joinedAmount)
               this.setTrnFormAmount(formatedAmount)
             }
             // number with action
             else {
               const amountWithouLastNumber = amountSplit.slice(0, -1).join('')
-              const lastNumber = lastItem.replace(/\s+/g, '') + value
-              const formatedLastNumber = Number(lastNumber).toLocaleString('ru-RU')
+              const lastNumber = this.unlocalize(lastItem + value)
+              const formatedLastNumber = formatNumberToLocale(lastNumber)
               const combinedAmount = amountWithouLastNumber + formatedLastNumber
               this.setTrnFormAmount(combinedAmount)
             }
           }
         }
         // after action
-        else if (value !== '0') {
+        else {
           this.setTrnFormAmount(`${amount}${value}`)
         }
       }
     },
 
+    getSeparator(separatorType, locale) {
+        const numberWithGroupAndDecimalSeparator = 1000.1;
+        return Intl.NumberFormat(locale)
+            .formatToParts(numberWithGroupAndDecimalSeparator)
+            .find(part => part.type === separatorType)
+            .value;
+    },
+
+    unlocalize(strNum) {
+      const groupSeparator = this.getSeparator('group')
+      const decimalSeparator = this.getSeparator('decimal')
+      // hack to handle mathjs inability to work with locale formatted numbers
+      return strNum.replace(/\s+/g, '').replaceAll(groupSeparator,'').replaceAll(decimalSeparator, '.')
+    },
+
     evaluateAmount (amount) {
       try {
-        const amountString = String(amount).replace(/\s+/g, '')
+        const amountString = this.unlocalize(String(amount))
 
         if (amountString.search((/(\D)/)) !== -1) {
           const lastItem = amountString.slice(-1)
-          const isLastItemNumber = (/(\d)/).test(lastItem)
+          const isLastItemNumber = this.isNumber(lastItem)
           let sum = ''
           isLastItemNumber
             ? sum = evaluate(amountString)
             : sum = evaluate(amountString.slice(0, -1))
-
-          return `${Math.round(Math.abs(sum))}`
+            
+          return `${Number(round(Math.abs(sum),2)).toLocaleString()}`
         }
       }
       catch (error) {
@@ -134,7 +170,7 @@ export default {
 
     handleMath () {
       if (this.$store.state.trnForm.values.amountEvaluation) {
-        const amount = Number(this.$store.state.trnForm.values.amountEvaluation).toLocaleString('ru-RU')
+        const amount = this.$store.state.trnForm.values.amountEvaluation
         this.$store.commit('trnForm/setTrnFormValues', {
           amount,
           amountEvaluation: null
@@ -187,12 +223,12 @@ export default {
 
   .calcItem._act(@click="event => handlePress(event, 'action')")
     .calcItem__in /
-  .calcItem._clear(@click="handleClear")
+  .calcItem._clear(v-longpress="handleClear" @click="event => handlePress(event, 'remove')")
     .calcItem__in C
   .calcItem._num(@click="event => handlePress(event, 'number')")
     .calcItem__in 0
-  .calcItem._clear(@click="event => handlePress(event, 'remove')")
-    .calcItem__in: .mdi.mdi-chevron-left
+  .calcItem._num(@click="event => handlePress(event, 'dot')")
+    .calcItem__in {{decimalSeparator}}
 
   .calcItem._sum(
     @click="amounIsNumber ? $emit('onFormSubmit') : handleMath()"

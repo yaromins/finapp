@@ -147,7 +147,7 @@ export default {
 
     formatAmount (amount) {
       const fixed = this.$store.state.currencies.base === 'RUB' ? 0 : 2
-      return Number(`${amount.toFixed(fixed)}`).toLocaleString('ru-RU')
+      return Number(`${amount.toFixed(fixed)}`).toLocaleString()
     },
 
     generateData (periodName, oldSeries) {
