@@ -183,8 +183,10 @@ export default {
     },
 
     setTrnFormAmount (amount) {
+      const amountNumber = Number(this.unlocalize(amount))
       this.$store.commit('trnForm/setTrnFormValues', {
         amount,
+        amountNumber,
         amountEvaluation: this.evaluateAmount(amount)
       })
     }
