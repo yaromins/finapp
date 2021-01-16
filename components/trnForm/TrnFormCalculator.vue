@@ -99,9 +99,10 @@ export default {
           if (lastItem.length < 15) {
             const formatNumberToLocale = (value) => {
               const formattedNumber = Number(value).toLocaleString()
-              if (value.endsWith(`${this.decimalSeparator}0`)) {
+              console.log(`value=${value} -> formattedNumber=${formattedNumber} `)
+              if (value.endsWith('.0')) {
                 // to handle 0.01 case correctly
-                return `${formattedNumber}${this.decimalSeparator}0`
+                 return `${formattedNumber}${this.decimalSeparator}0`
               } 
               return formattedNumber 
             }
