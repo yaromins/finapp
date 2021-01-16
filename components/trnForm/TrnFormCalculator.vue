@@ -1,5 +1,6 @@
 <script>
 import { evaluate, round } from 'mathjs'
+import unlocalize from '~/utils/unlocalize'
 
 export default {
   computed: {
@@ -9,7 +10,7 @@ export default {
 
     amountIsNumber () {
       if (this.amountString == 0) { return true }
-      return Number(this.unlocalize(this.amountString))
+      return Number(unlocalize(this.amountString))
     },
 
     submitClassName () {
@@ -38,7 +39,7 @@ export default {
   methods: {
 
     isNumber (value) {
-      const unlocalized = this.unlocalize(value)
+      const unlocalized = unlocalize(value)
       return Number(unlocalized) == Number(unlocalized)
     },
 
@@ -47,7 +48,7 @@ export default {
       const value = event.target.textContent
       const isValueNumber = this.isNumber(value)
       const amountSplit = amount.split(/(\/|\*|-|\+)/).filter(i => i)
-      const lastItem = this.unlocalize([...amountSplit].reverse()[0])
+      const lastItem = unlocalize([...amountSplit].reverse()[0])
       const isLastItemNumber = this.isNumber(lastItem)
       
       // remove
@@ -62,7 +63,7 @@ export default {
         if (amount.length > 1) {
           const amountWithouLastNumber = amountSplit.slice(0, -1).join('')
           if (lastItem.length > 1) {
-            const lastNumber = this.unlocalize(lastItem.slice(0, -1))
+            const lastNumber = unlocalize(lastItem.slice(0, -1))
             const formatedLastNumber = Number(lastNumber).toLocaleString()
             const combinedAmount = amountWithouLastNumber + formatedLastNumber
             this.setTrnFormAmount(combinedAmount)
@@ -107,14 +108,14 @@ export default {
             }
             // first number
             if (amountSplit.length === 1) {
-              const joinedAmount = this.unlocalize(amount + value)
+              const joinedAmount = unlocalize(amount + value)
               const formatedAmount = formatNumberToLocale(joinedAmount)
               this.setTrnFormAmount(formatedAmount)
             }
             // number with action
             else {
               const amountWithouLastNumber = amountSplit.slice(0, -1).join('')
-              const lastNumber = this.unlocalize(lastItem + value)
+              const lastNumber = unlocalize(lastItem + value)
               const formatedLastNumber = formatNumberToLocale(lastNumber)
               const combinedAmount = amountWithouLastNumber + formatedLastNumber
               this.setTrnFormAmount(combinedAmount)
@@ -128,24 +129,9 @@ export default {
       }
     },
 
-    getSeparator(separatorType, locale) {
-        const numberWithGroupAndDecimalSeparator = 1000.1;
-        return Intl.NumberFormat(locale)
-            .formatToParts(numberWithGroupAndDecimalSeparator)
-            .find(part => part.type === separatorType)
-            .value;
-    },
-
-    unlocalize(strNum) {
-      const groupSeparator = this.getSeparator('group')
-      const decimalSeparator = this.getSeparator('decimal')
-      // hack to handle mathjs inability to work with locale formatted numbers
-      return strNum.replace(/\s+/g, '').replaceAll(groupSeparator,'').replaceAll(decimalSeparator, '.')
-    },
-
     evaluateAmount (amount) {
       try {
-        const amountString = this.unlocalize(String(amount))
+        const amountString = unlocalize(String(amount))
 
         if (amountString.search((/(\D)/)) !== -1) {
           const lastItem = amountString.slice(-1)
@@ -183,10 +169,8 @@ export default {
     },
 
     setTrnFormAmount (amount) {
-      const amountNumber = Number(this.unlocalize(amount))
       this.$store.commit('trnForm/setTrnFormValues', {
         amount,
-        amountNumber,
         amountEvaluation: this.evaluateAmount(amount)
       })
     }

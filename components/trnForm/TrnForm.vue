@@ -121,7 +121,6 @@ export default {
 
     handleSubmitTrn () {
       const values = { ...this.$store.state.trnForm.values }
-      values.amount = values.amountNumber
       const id = values.trnId || generateId(this.$day().valueOf())
 
       this.$store.dispatch('trns/addTrn', {
@@ -145,7 +144,7 @@ export default {
       const formTransferValues = this.$store.state.trnForm.transfer
       const walletFrom = wallets[formTransferValues.from]
       const walletTo = wallets[formTransferValues.to]
-      const amount = this.$store.state.trnForm.values.amountNumber
+      const amount = this.$store.state.trnForm.values.amount
       const amountTo = this.$store.getters['currencies/getConvertedAmount']({ amount, fromCurrency: walletFrom.currency, toCurrency: walletTo.currency })
 
       // Income

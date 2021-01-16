@@ -1,5 +1,6 @@
 import localforage from 'localforage'
 import dayjs from 'dayjs'
+import unlocalize from '~/utils/unlocalize'
 
 import {
   removeTrnToAddLaterLocal,
@@ -10,6 +11,7 @@ import {
 import { db } from '~/services/firebase'
 
 export default {
+
   /**
     * Create new trn
     * and save it to local storage when Client offline
@@ -24,7 +26,7 @@ export default {
     const uid = rootState.user.user.uid
     const trns = rootState.trns.items
     let isTrnSavedOnline = false
-    const amount = Number(String(values.amount).replace(/\s+/g, ''))
+    const amount = Number(unlocalize(values.amount))
     const currency = rootGetters['wallets/getWalletCurrency'](values.walletId)
     const date = dayjs(values.date)
     const baseValue = rootGetters['currencies/getAmountInBaseCurrency']({ amount, currency })
@@ -85,7 +87,7 @@ export default {
     const trn = trns[id];
 
     // is this part of transfer transaciton?
-    if (trn.transferTrnId) {  
+    if (trn.transferTrnId) {
       dispatch('deleteTransferTrn', [id, trn.transferTrnId])
     } else {
       // proceed with single transaction delete
@@ -104,14 +106,14 @@ export default {
     const uid = rootState.user.user.uid
     const trns = { ...rootState.trns.items }
 
-    ids.forEach( id => delete trns[id])
+    ids.forEach(id => delete trns[id])
     commit('setTrns', Object.freeze(trns))
     localforage.setItem('finapp.trns', trns)
-    ids.forEach( id => {
+    ids.forEach(id => {
       saveTrnIDforDeleteWhenClientOnline(id)
       db.ref(`users/${uid}/trns/${id}`)
-      .remove()
-      .then(() => removeTrnToDeleteLaterLocal(id))
+        .remove()
+        .then(() => removeTrnToDeleteLaterLocal(id))
     })
   },
 
