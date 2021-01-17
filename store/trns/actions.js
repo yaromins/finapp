@@ -26,7 +26,7 @@ export default {
     const uid = rootState.user.user.uid
     const trns = rootState.trns.items
     let isTrnSavedOnline = false
-    const amount = Number(unlocalize(values.amount))
+    const amount = Number(unlocalize(String(values.amount)))
     const currency = rootGetters['wallets/getWalletCurrency'](values.walletId)
     const date = dayjs(values.date)
     const baseValue = rootGetters['currencies/getAmountInBaseCurrency']({ amount, currency })
