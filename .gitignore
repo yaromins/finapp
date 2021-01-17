@@ -99,3 +99,4 @@ sw.*
 
 # Visual Studio Code
 .vscode
+services/myFirebaseConfig.js
