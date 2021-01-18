@@ -22,15 +22,13 @@ export default {
   watch: {
     show: {
       handler (isShow) {
+        const initialSlide = this.$store.getters['categories/quickSelectorCategoriesIds'] && this.$store.getters['categories/quickSelectorCategoriesIds'].length > 0 ? 1 : 2
         this.$nextTick(() => {
-          if (this.slider) {
-            this.slider.update()
-          }
-          else {
+          if (isShow && this.$refs.slider) {
             this.slider = new Swiper(this.$refs.slider, {
               slidesPerView: 1,
               autoHeight: false,
-              initialSlide: 1,
+              initialSlide,
               shortSwipes: false,
               longSwipesRatio: 0.1,
               longSwipesMs: 60
@@ -60,6 +58,7 @@ export default {
 
 <template lang="pug">
 TrnFormModal(
+  v-if="$store.state.trnForm.modal.categories"
   :show="$store.state.trnForm.modal.categories"
   :title="$t('categories.name')"
   :position="$store.state.ui.mobile ? 'bottom' : null"

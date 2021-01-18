@@ -48,9 +48,6 @@ export default {
     }, {
       rel: 'stylesheet',
       href: 'https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css'
-    }, {
-      rel: 'stylesheet',
-      href: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'
     }],
 
     noscript: [{ innerHTML: 'This website requires JavaScript.' }]
@@ -174,15 +171,6 @@ export default {
         urlPattern: 'https://fonts.gstatic.com/',
         handler: 'cacheFirst'
       }, {
-        urlPattern: 'https://maxcdn.bootstrapcdn.com/',
-        handler: 'cacheFirst'
-      }, {
-        urlPattern: 'https://cdnjs.cloudflare.com/',
-        handler: 'cacheFirst'
-      }, {
-        urlPattern: 'https://netdna.bootstrapcdn.com/',
-        handler: 'cacheFirst'
-      }, {
         urlPattern: 'https://cdn.materialdesignicons.com/',
         handler: 'cacheFirst'
       }]
@@ -190,7 +178,7 @@ export default {
   },
 
   build: {
-    extractCSS: true,
+    extractCSS: false,
     extend(config, ctx) {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
