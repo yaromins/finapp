@@ -87,7 +87,7 @@ export default {
     const trn = trns[id];
 
     // is this part of transfer transaciton?
-    if (trn.transferTrnId) {
+    if (trn && trn.transferTrnId) {
       dispatch('deleteTransferTrn', [id, trn.transferTrnId])
     } else {
       // proceed with single transaction delete
