@@ -122,6 +122,7 @@ export default {
     handleSubmitTrn () {
       const values = { ...this.$store.state.trnForm.values }
       const id = values.trnId || generateId(this.$day().valueOf())
+      delete values.transferTrnId
 
       this.$store.dispatch('trns/addTrn', {
         id,
@@ -132,7 +133,8 @@ export default {
     handleSubmitTransfer () {
       const values = {
         categoryId: this.$store.getters['categories/transferCategoryId'],
-        date: this.$day(this.$store.state.trnForm.values.date).valueOf()
+        date: this.$day(this.$store.state.trnForm.values.date).valueOf(),
+        description: this.$store.state.trnForm.values.description
       }
       // transfer transaction would genereate two individual transactions
       // with reference to each other (transferTrnId). So that delete of one 
