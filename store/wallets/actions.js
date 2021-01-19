@@ -1,5 +1,6 @@
 import localforage from 'localforage'
 import { db } from '~/services/firebase'
+import unlocalize from '~/utils/unlocalize'
 
 export default {
   addWallet ({ dispatch, rootState, getters }, { id, values }) {
@@ -10,6 +11,7 @@ export default {
       countTotal: values.countTotal,
       currency: values.currency,
       name: values.name,
+      opening_balance : Number(unlocalize(String(values.opening_balance))) || 0,
       order: parseInt(values.order) || 1
     }
 

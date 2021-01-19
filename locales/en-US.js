@@ -157,6 +157,9 @@ export default {
       total: {
         placeholder: 'Count amount in total balance'
       },
+      opening_balance: {
+        label: 'Opening balance'
+      },
       save: 'Save'
     }
   },

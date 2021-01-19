@@ -24,7 +24,7 @@ export default {
   // getWalletAmount
   getWalletAmount: (state, getters, rootState, rootGetters) => (walletId) => {
     const trns = rootState.trns.items
-    let amount = 0
+    let amount = rootState.wallets.items[walletId].opening_balance || 0
     const trnsIds = rootGetters['trns/getTrnsIdsInWallet'](walletId)
     for (const trnId of trnsIds) {
       if (trns[trnId]) {
@@ -46,7 +46,7 @@ export default {
 
     const getWalletAmount = (walletId) => {
       const trns = rootState.trns.items
-      let amount = 0
+      let amount = rootState.wallets.items[walletId].opening_balance || 0
       const trnsIds = rootGetters['trns/getTrnsIdsInWallet'](walletId)
       for (const trnId of trnsIds) {
         if (trns[trnId].type === 0) {

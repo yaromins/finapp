@@ -15,6 +15,7 @@ export default {
         order: 1,
         countTotal: true,
         currency: 'RUB',
+        opening_balance: 0,
         color: this.$store.state.ui.defaultBgColor
       }
     }
@@ -70,6 +71,7 @@ export default {
           countTotal: this.wallet.countTotal,
           currency: this.wallet.currency,
           name: this.wallet.name,
+          opening_balance: this.wallet.opening_balance,
           order: this.wallet.order
         }
 
@@ -159,6 +161,15 @@ ComponentWrap
             .inputModal._flex
               .inputModal__value: .inputModal__color(:style="{ background: wallet.color }")
               .inputModal__label {{ $t('wallets.form.color.label') }}
+
+      .form-line._text
+        .inputText
+          input(
+            type="number"
+            v-model="wallet.opening_balance"
+            v-focus.lazy="$store.state.ui.pc"
+          ).inputText__value
+          .inputText__label {{ $t('wallets.form.opening_balance.label') }}
 
       .form-line._p0._clean
         Checkbox(

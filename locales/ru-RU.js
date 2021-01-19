@@ -159,6 +159,9 @@ export default {
       total: {
         placeholder: 'Считать в общем балансе'
       },
+      opening_balance: {
+        label: 'Начальный баланс'
+      },
       save: 'Сохранить'
     }
   },
