@@ -39,11 +39,11 @@ export default {
       const walletTotal = this.$store.getters['wallets/walletsTotal'][this.id]
       const total = walletTotal.base
       const reconciliationCadence = walletTotal.reconciliationCadence
+      const isClosed = wallet.closed
       const isReconciled = isReconciledCheck(wallet.balances, total, reconciliationCadence)
       const hasEndingBalance = wallet.balances && wallet.balances.ending
-      const reconciledStatus = hasEndingBalance ? (isReconciled ? '👍 ' : '⛔ ') : ''
-      //const reconciledDate = hasEndingBalance ? (isReconciled ? '' : wallet.balances.ending.date.slice(5,10)) : ''
-      const reconciledDate = hasEndingBalance ? wallet.balances.ending.date.slice(5,10) : ''
+      const reconciledStatus = !isClosed && hasEndingBalance ? (isReconciled ? '👍 ' : '⛔ ') : ''
+      const reconciledDate =  isClosed ? 'closed' : hasEndingBalance ? wallet.balances.ending.date.slice(5,10) : ''
       return {
         ...wallet,
         reconciledName: reconciledStatus + wallet.name,
