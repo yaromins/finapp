@@ -157,8 +157,17 @@ export default {
       total: {
         placeholder: 'Count amount in total balance'
       },
-      opening_balance: {
+      openingBalance: {
         label: 'Opening balance'
+      },
+      reconcileCadenceDays: {
+        label: 'Reconcile period in days'
+      },
+      reconciledDate: {
+        label: 'Last reconciled date'
+      },
+      showInTx: {
+        placeholder: 'Allow in manual transactions'
       },
       save: 'Save'
     }

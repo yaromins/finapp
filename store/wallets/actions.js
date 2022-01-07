@@ -11,16 +11,18 @@ export default {
       countTotal: values.countTotal,
       currency: values.currency,
       name: values.name,
-      opening_balance : Number(unlocalize(String(values.opening_balance))) || 0,
+      openingBalance : Number(unlocalize(String(values.openingBalance))) || 0,
+      reconcileCadenceDays : Number(String(values.reconcileCadenceDays)) || 0,
+      reconciledDate : "2022-01-06",
+      showInTx: values.showInTx,
       order: parseInt(values.order) || 1
     }
-
     // set default currency based on first created wallet
     if (!getters.hasWallets) {
       dispatch('currencies/setBaseCurrency', values.currency, { root: true })
     }
 
-    db.ref(`users/${uid}/accounts/${id}`).set(formatedValues)
+    db.ref(`users/${uid}/accounts/${id}`).update(formatedValues)
   },
 
   initWallets ({ dispatch, rootState }) {

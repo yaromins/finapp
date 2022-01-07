@@ -137,7 +137,7 @@ export default {
     showOnly: 'показать только',
     sortTitle: 'Сортировать кошельки',
     createNewTitle: 'Создание кошелька',
-    editTitle: 'Редактирование кошелек',
+    editTitle: 'Редактирование кошелька',
     form: {
       name: {
         label: 'Имя кошелька',
@@ -159,8 +159,17 @@ export default {
       total: {
         placeholder: 'Считать в общем балансе'
       },
-      opening_balance: {
+      openingBalance: {
         label: 'Начальный баланс'
+      },
+      reconcileCadenceDays: {
+        label: 'Периодичность сверки в днях'
+      },
+      reconciledDate: {
+        label: 'Дата последней сверки'
+      },
+      showInTx: {
+        placeholder: 'Доступен для ручного выбора при создании транзакции'
       },
       save: 'Сохранить'
     }

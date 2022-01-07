@@ -18,7 +18,7 @@ TrnFormModal(
   @onClose="$store.commit('trnForm/toogleTrnFormModal', 'wallets')"
 )
   .trnFormWalletsList
-    WalletsList3(
+    WalletsList4(
       :limit="6"
       :showBase="false"
       showToogle

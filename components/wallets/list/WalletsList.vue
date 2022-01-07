@@ -36,7 +36,7 @@ export default {
     walletsIds () {
       const walletsIds = this.$store.getters['wallets/walletsSortedIds']
       if (this.stateLimit) { return walletsIds.slice(0, this.stateLimit) }
-      return walletsIds
+      return walletsIds.filter( id => !this.$store.state.wallets.items[id].closed)
     }
   },
 

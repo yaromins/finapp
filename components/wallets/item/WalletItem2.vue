@@ -26,9 +26,29 @@ export default {
 
   computed: {
     wallet () {
+      const isReconciledCheck = (balances, calcBalance, reconciliationCadence) => {
+        if (!balances || !balances.ending) {
+          return false
+        }
+        const endingBalance = balances.ending
+        const isBalancing = Math.abs(endingBalance.amount-calcBalance) < 0.01
+        const isRecentEnough = (new Date().getTime() - new Date(endingBalance.date).getTime()) < reconciliationCadence
+        return isBalancing && isRecentEnough
+      }
+      const wallet = this.$store.state.wallets.items[this.id];
+      const walletTotal = this.$store.getters['wallets/walletsTotal'][this.id]
+      const total = walletTotal.base
+      const reconciliationCadence = walletTotal.reconciliationCadence
+      const isReconciled = isReconciledCheck(wallet.balances, total, reconciliationCadence)
+      const hasEndingBalance = wallet.balances && wallet.balances.ending
+      const reconciledStatus = hasEndingBalance ? (isReconciled ? '👍 ' : '⛔ ') : ''
+      //const reconciledDate = hasEndingBalance ? (isReconciled ? '' : wallet.balances.ending.date.slice(5,10)) : ''
+      const reconciledDate = hasEndingBalance ? wallet.balances.ending.date.slice(5,10) : ''
       return {
-        ...this.$store.state.wallets.items[this.id],
-        total: this.$store.getters['wallets/walletsTotal'][this.id].base
+        ...wallet,
+        reconciledName: reconciledStatus + wallet.name,
+        reconciledDate,
+        total
       }
     }
   },
@@ -53,7 +73,11 @@ export default {
   @click="handleClick"
 )
   .walletItemGrid__line(:style="{ background: wallet.color || $store.state.ui.defaultBgColor }")
-  .walletItemGrid__name {{ wallet.name }}
+  .walletItemGrid__name 
+    WalletsName( 
+      :name="wallet.reconciledName"
+      :tooltip="wallet.reconciledDate"
+    )
   .walletItemGrid__amount
     Amount(
       :alwaysShowSymbol="true"

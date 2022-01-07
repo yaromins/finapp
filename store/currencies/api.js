@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const openratesUrl = 'https://api.openrates.io'
-const nbrbUrl = 'https://www.nbrb.by'
+const key = 'fbd244001a284582869ebc6208e9556c'
+const serviceUrl = `https://openexchangerates.org/api/latest.json?app_id=${key}`
 
 export const getRatesOf = async (baseCurrency) => {
   if (!baseCurrency) {
@@ -9,14 +9,17 @@ export const getRatesOf = async (baseCurrency) => {
     return
   }
 
-  const currencies = await axios.get(`${openratesUrl}/latest?base=${baseCurrency}`)
-  const base2byn = await axios.get(`${nbrbUrl}/api/exrates/rates/${baseCurrency}?parammode=2`)
+  const currencies = await axios.get(serviceUrl)
+  const rates = {}
   if (currencies && currencies.data) {
-    if (base2byn) {
-      const { Cur_Scale, Cur_OfficialRate } = base2byn.data
-      currencies.data.rates["BYN"] = Cur_OfficialRate / Cur_Scale;
+    const ratesBasedOnUsd = currencies.data.rates
+    const baseRate = ratesBasedOnUsd[baseCurrency]
+
+    // Conver rates to base currency
+    for (const id in ratesBasedOnUsd) {
+      rates[id] = ratesBasedOnUsd[id] / baseRate
     }
-    return currencies.data.rates
+    return rates
   }
   else {
     console.log('api unavaliable')

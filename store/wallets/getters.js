@@ -3,7 +3,7 @@
 // walletsSortedIds
 
 export default {
-  hasWallets (state, getters, rootState) {
+  hasWallets(state, getters, rootState) {
     if (rootState.wallets.items) {
       if (Object.keys(rootState.wallets.items).length > 0) {
         return true
@@ -16,15 +16,14 @@ export default {
     return rootState.wallets.items[walletId].currency
   },
 
-  getWalletsCurrencies (state, getters, rootState) {
+  getWalletsCurrencies(state, getters, rootState) {
     if (!getters.hasWallets) { return [] }
-    return Object.keys(rootState.wallets.items).map( walletId => rootState.wallets.items[walletId].currency)
+    return Object.keys(rootState.wallets.items).map(walletId => rootState.wallets.items[walletId].currency)
   },
 
-  // getWalletAmount
   getWalletAmount: (state, getters, rootState, rootGetters) => (walletId) => {
     const trns = rootState.trns.items
-    let amount = rootState.wallets.items[walletId].opening_balance || 0
+    let amount = rootState.wallets.items[walletId].openingBalance || 0
     const trnsIds = rootGetters['trns/getTrnsIdsInWallet'](walletId)
     for (const trnId of trnsIds) {
       if (trns[trnId]) {
@@ -39,14 +38,15 @@ export default {
     return amount
   },
 
-  walletsTotal (state, getters, rootState, rootGetters) {
+  walletsTotal(state, getters, rootState, rootGetters) {
     if (!getters.hasWallets) { return {} }
     const walletsTotal = {}
     const wallets = rootState.wallets.items
 
     const getWalletAmount = (walletId) => {
       const trns = rootState.trns.items
-      let amount = rootState.wallets.items[walletId].opening_balance || 0
+      const wallet = rootState.wallets.items[walletId]
+      let amount = wallet.openingBalance || 0
       const trnsIds = rootGetters['trns/getTrnsIdsInWallet'](walletId)
       for (const trnId of trnsIds) {
         if (trns[trnId].type === 0) {
@@ -60,21 +60,30 @@ export default {
     }
 
     Object.keys(wallets).forEach((id) => {
+      const wallet = wallets[id]
       walletsTotal[id] = {
         base: getWalletAmount(id),
-        currency: wallets[id].currency
+        currency: wallet.currency,
+        reconciliationCadence: wallets[id].reconcileCadenceDays * 1000 * 60 * 60 * 24
       }
     })
 
     return walletsTotal
   },
 
-  walletsSortedIds (state, getters) {
+  walletsSortedIds(state, getters) {
     if (!getters.hasWallets) { return [] }
     return Object.keys(state.items).sort((a, b) => {
       if (parseInt(state.items[a].order) < parseInt(state.items[b].order)) { return -1 }
       if (parseInt(state.items[a].order) > parseInt(state.items[b].order)) { return 1 }
       return 0
     })
+  },
+
+  walletsVisibleIds(state, getters) {
+    if (!getters.hasWallets) { return [] }
+    const ids = getters.walletsSortedIds
+    const visibleIds = ids.filter(id => state.items[id].showInTx)
+    return visibleIds
   }
 }

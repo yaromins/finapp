@@ -2,28 +2,48 @@
 import { focus } from 'vue-focus'
 import generateId from '~/utils/id'
 import colors from '~/assets/js/colors'
+import Datepicker from 'vuejs-datepicker'
+
+
+const calendarOptions = {
+  'use-utc': true,
+  disabledDates: {
+    from: new Date()
+  }
+}
 
 export default {
   directives: { focus },
+  components: {
+    Datepicker
+  },
 
   data () {
     return {
       showColors: false,
       showCurrencies: false,
+      showEndingBalanceDate: false,
       wallet: {
         name: null,
         order: 1,
         countTotal: true,
+        showInTx: true,
         currency: 'RUB',
-        opening_balance: 0,
-        color: this.$store.state.ui.defaultBgColor
+        openingBalance: 0,
+        reconcileCadenceDays: 0,
+        endingBalance: 0,
+        endingBalanceDate: null
+        },
+      color: this.$store.state.ui.defaultBgColor
       }
-    }
   },
 
   computed: {
     walletId () {
       return this.$store.state.wallets.editId
+    },
+    endingBalanceDate () {
+      return this.$store.state.wallets.values.showEndingBalanceDate
     }
   },
 
@@ -43,6 +63,7 @@ export default {
 
   created () {
     this.colors = colors
+    this.calendarOptions = calendarOptions
     if (!this.$store.state.wallets.editId) {
       this.wallet.color = colors[Math.floor(Math.random() * colors.length)]
     }
@@ -61,7 +82,10 @@ export default {
       this.wallet.currency = currency
       this.showCurrencies = false
     },
-
+    handleEndingBalanceDateSelect (date) {
+      this.wallet.endingBalanceDate = date
+      this.showEndingBalanceDate = false
+    },
     handleSubmit () {
       if (this.validateForm()) {
         const id = this.walletId || generateId()
@@ -69,9 +93,12 @@ export default {
         const walletsValues = {
           color: this.wallet.color,
           countTotal: this.wallet.countTotal,
+          showInTx: this.wallet.showInTx,
           currency: this.wallet.currency,
           name: this.wallet.name,
-          opening_balance: this.wallet.opening_balance,
+          openingBalance: this.wallet.openingBalance,
+          reconcileCadenceDays: this.wallet.reconcileCadenceDays,
+          reconciledDate: this.wallet.reconciledDate,
           order: this.wallet.order
         }
 
@@ -166,16 +193,43 @@ ComponentWrap
         .inputText
           input(
             type="number"
-            v-model="wallet.opening_balance"
+            v-model="wallet.openingBalance"
             v-focus.lazy="$store.state.ui.pc"
           ).inputText__value
-          .inputText__label {{ $t('wallets.form.opening_balance.label') }}
+          .inputText__label {{ $t('wallets.form.openingBalance.label') }}
+
+      .form-line._text
+        .inputText
+          input(
+            type="number"
+            v-model="wallet.reconcileCadenceDays"
+            v-focus.lazy="$store.state.ui.pc"
+          ).inputText__value
+          .inputText__label {{ $t('wallets.form.reconcileCadenceDays.label') }}
+
+      .form-line._text
+        .inputText
+          input(
+            type="number"
+            v-model="wallet.reconciledDate"
+            v-focus.lazy="$store.state.ui.pc"
+          ).inputText__value
+          .inputText__label {{ $t('wallets.form.reconciledDate.label') }}
+      
+      .form-line._p0._clean
 
       .form-line._p0._clean
         Checkbox(
           v-model="wallet.countTotal"
           :title="$t('wallets.form.total.placeholder')"
           :alt="true")
+
+      .form-line._p0._clean
+        Checkbox(
+          v-model="wallet.showInTx"
+          :title="$t('wallets.form.showInTx.placeholder')"
+          :alt="true")
+
 
     //- colors
     Portal(
@@ -217,12 +271,36 @@ ComponentWrap
               v-for="(item, currency) in $store.state.currencies.rates"
             ) {{ currency }}
 
+    Portal(
+      v-if="showEndingBalanceDate"
+      to="modal"
+      title="Date"
+    )
+      Datepicker(
+        :inline="true"
+        :value="date"
+        :monday-first="true"
+        wrapper-class="inlineCalendar"
+        calendar-class="inlineCalendar__in"
+        :disabledDates="calendarOptions.disabledDates"
+        @selected="handleSelectDate"
+      )
+      .modalLinks
+        ModalButton(
+          name="Today"
+          icon="mdi mdi-weather-sunset-up"
+          @onClick="() => handleSelectDateDaysAgo(0)"
+        )
+
+
   template(slot="bottom")
     .col
       Button(
         :class="['_text-center _blue', { _inline: $store.state.ui.pc }]"
         :title="$t('wallets.form.save')"
         @onClick="handleSubmit")
+
+  WalletFormModalCalendar
 </template>
 
 <style lang="stylus" scoped>

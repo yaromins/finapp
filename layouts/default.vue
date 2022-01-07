@@ -80,7 +80,6 @@ export default {
     name="modal"
   )
 
-  LazyMetrica(v-if="isProduction")
 </template>
 
 <style lang="stylus">
