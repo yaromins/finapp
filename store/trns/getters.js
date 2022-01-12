@@ -40,7 +40,6 @@ export default {
           if (wallet.currency !== baseCurrency) {
             amount = trn.baseValue ? trn.baseValue : rootGetters['currencies/getAmountInBaseCurrency']({ amount: trn.amount, currency: wallet.currency })
             if (!trn.baseValue) {
-              console.log(`${key} trn is missing baseValue`)
               missingBaseValue++
             }
           }
