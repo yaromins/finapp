@@ -31,6 +31,7 @@ export default {
         currency: 'RUB',
         openingBalance: 0,
         reconcileCadenceDays: 0,
+        reconciledDate: "",
         endingBalance: 0,
         endingBalanceDate: null
         },
@@ -207,14 +208,15 @@ ComponentWrap
           ).inputText__value
           .inputText__label {{ $t('wallets.form.reconcileCadenceDays.label') }}
 
-      .form-line._text
-        .inputText
-          input(
-            type="number"
-            v-model="wallet.reconciledDate"
-            v-focus.lazy="$store.state.ui.pc"
-          ).inputText__value
-          .inputText__label {{ $t('wallets.form.reconciledDate.label') }}
+      template(v-if="wallet.balances")
+        .form-line._text
+          .inputText
+            input(
+              type="text"
+              v-model="wallet.balances.ending.date.slice(0,10)"
+              v-focus.lazy="$store.state.ui.pc"
+            ).inputText__value
+            .inputText__label {{ $t('wallets.form.reconciledDate.label') }}
       
       .form-line._p0._clean
 

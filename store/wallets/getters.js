@@ -64,7 +64,7 @@ export default {
       walletsTotal[id] = {
         base: getWalletAmount(id),
         currency: wallet.currency,
-        reconciliationCadence: wallets[id].reconcileCadenceDays * 1000 * 60 * 60 * 24
+        reconciliationCadence: wallet.reconcileCadenceDays * 1000 * 60 * 60 * 24
       }
     })
 

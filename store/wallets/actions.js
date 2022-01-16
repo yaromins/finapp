@@ -13,7 +13,6 @@ export default {
       name: values.name,
       openingBalance : Number(unlocalize(String(values.openingBalance))) || 0,
       reconcileCadenceDays : Number(String(values.reconcileCadenceDays)) || 0,
-      reconciledDate : "2022-01-06",
       showInTx: values.showInTx,
       order: parseInt(values.order) || 1
     }
