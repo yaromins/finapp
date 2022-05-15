@@ -63,11 +63,11 @@ export default {
     return {
       expense: Math.abs(+expenses.toFixed(0)),
       income: Math.abs(+incomes.toFixed(0)),
-      sum: parseInt(incomes - expenses),
+      sum: parseInt((incomes - expenses).toFixed(0)),
       // @deprecated
       expenses: Math.abs(+expenses.toFixed(0)),
       incomes: Math.abs(+incomes.toFixed(0)),
-      total: parseInt(incomes - expenses),
+      total: parseInt((incomes - expenses).toFixed(0)),
     }
   },
 
