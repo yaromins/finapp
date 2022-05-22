@@ -133,7 +133,6 @@ export function getTotal(props: TotalProps): TotalReturns {
       }
     }
   }
-
   // Total
   const sumTransactions = incomeTransactions - expenseTransactions
   const sumTransfers = incomeTransfers - expenseTransfers

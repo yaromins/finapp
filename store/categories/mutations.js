@@ -8,9 +8,20 @@ export default {
     state.items = {
       ...freezedItems,
       transfer: {
-        color: 'var(--c-blue-1)',
+        color: 'var(--c-black-1)',
         icon: 'mdi mdi-repeat',
-        name: 'Transfer',
+        name: 'transfer',
+        order: 0,
+        parentId: 0,
+        childIds: [],
+        showInLastUsed: false,
+        showInQuickSelector: false,
+        showStat: false,
+      },
+      unclassified: {
+        color: 'var(--c-black-1)',
+        icon: 'mdi mdi-debian',
+        name: 'unclassified',
         order: 0,
         parentId: 0,
         childIds: [],

@@ -22,5 +22,5 @@ export function getTransferCategoriesIds(categoriesItems): CategoryID[] {
     .keys(categoriesItems)
     .filter(id => names.includes(categoriesItems[id].name.toLowerCase()))
 
-  return [...categoriesIdsByName, 'transfer']
+  return [...categoriesIdsByName, 'transfer', 'unclassified']
 }

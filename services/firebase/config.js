@@ -1,9 +1,9 @@
 export const config = {
-  apiKey: 'AIzaSyAjJG6UrfA1FEzV8qbjmuk8wiUic0uWv-8',
-  authDomain: 'finapp-17474.firebaseapp.com',
-  databaseURL: 'https://finapp-17474.firebaseio.com',
-  projectId: 'finapp-17474',
-  storageBucket: 'finapp-17474.appspot.com',
-  messagingSenderId: '1057184379213',
-  appId: '1:1057184379213:web:8c728d0b7099f194',
+  apiKey: "AIzaSyAQjfYjJYBUH0IciQJIAYzWR1EeqmPAxoM",
+  authDomain: "serfin-2022.firebaseapp.com",
+  databaseURL: "https://serfin-2022-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "serfin-2022",
+  storageBucket: "serfin-2022.appspot.com",
+  messagingSenderId: "497176385584",
+  appId: "1:497176385584:web:a1d1b258961b42c4c1b5f5"
 }

@@ -63,8 +63,14 @@ UiPage
             .grow.flex.items-center.gap-3
               .text-sm.text-skin-item-base {{ walletItem.name }}
               UiIconWalletWithdrawal.w-4.h-4.text-skin-item-base-down(
-                v-if="walletItem.countTotal"
+                v-if="walletItem.countTotal && !walletItem.isUnderReconciliation"
               )
+              UiIconWalletReconciled.w-4.h-4.text-skin-item-base-down(
+                v-if="walletItem.countTotal && walletItem.isReconciled"
+              )
+              UiIconWalletUnreconciled.w-4.h-4.text-skin-item-base-down(
+                v-if="walletItem.countTotal && walletItem.isUnderReconciliation && !walletItem.isReconciled"
+              )              
               UiIconWalletSavings.w-4.h-4.text-skin-item-base-down(
                 v-if="!walletItem.countTotal && !walletItem.isCredit"
               )

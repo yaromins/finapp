@@ -20,11 +20,18 @@ export default function useWallets() {
     let wallets: Record<WalletID, WalletItemWithAmount> = {}
 
     for (const walletId of walletsIdsSorted) {
+      const amount = $store.getters['wallets/walletsTotal'][walletId]
+      const r13n = $store.state.wallets.r13nItems[walletId]
+      const isUnderReconciliation = r13n != undefined
+      const isReconciled = isUnderReconciliation && 
+        Math.abs(r13n.endingBalanceAmount - amount) <0.01
       wallets = {
         ...wallets,
         [walletId]: {
           ...$store.state.wallets.items[walletId],
-          amount: $store.getters['wallets/walletsTotal'][walletId],
+          isUnderReconciliation,
+          isReconciled,
+          amount,
         },
       }
     }

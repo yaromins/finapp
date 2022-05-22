@@ -9,6 +9,18 @@ export default {
     })
   },
 
+  initWalletsR13N({ dispatch, rootState }) {
+    const uid = rootState.user.user.uid
+    getDataAndWatch(`users/${uid}/accountsR13N`, (items) => {
+      dispatch('setWalletsR13N', Object.freeze(items || {}))
+    })
+  },
+  
+  setWalletsR13N({ commit }, items) {
+    commit('setWalletsR13N', items)
+    localforage.setItem('finapp.wallets.r13n', items)
+  },
+
   setWallets({ commit }, items) {
     commit('setWallets', items)
     localforage.setItem('finapp.wallets', items)
@@ -56,5 +68,6 @@ export default {
   unsubscribeWallets({ rootGetters }) {
     const uid = rootGetters['user/userUid']
     unsubscribeData(`users/${uid}/accounts`)
+    unsubscribeData(`users/${uid}/accountsR13N`)
   },
 }
