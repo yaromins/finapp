@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { getCategoriesIds, getTransferCategoriesIds } from '~/components/categories/getCategories'
 import { getTrnsIds } from '~/components/trns/getTrns'
 
-export default {
+export default { 
   hasTrns(_state, _getters, rootState) {
     if (rootState.trns.items) {
       if (Object.keys(rootState.trns.items).length > 0)
