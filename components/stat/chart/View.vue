@@ -1,11 +1,12 @@
 <script lang="ts">
 import { Chart } from 'highcharts-vue'
-import chartOptions from '~/components/stat/chartOptions'
-import useChart from '~/components/chart/useChart'
-import useFilter from '~/modules/filter/useFilter'
-import { getCatsIds, getTransferCategoriesIds } from '~/components/categories/getCategories'
-import { getTotal } from '~/components/trns/getTotal'
 import { getTrnsIds } from '~/components/trns/getTrns'
+import { getTotal } from '~/components/amount/getTotal'
+import { getCategoriesIds, getTransferCategoriesIds } from '~/components/categories/getCategories'
+import { formatAmount, getCurrencySymbol } from '~/components/amount/formatAmount'
+import useFilter from '~/modules/filter/useFilter'
+import useChart from '~/components/chart/useChart'
+import chartOptions from '~/components/stat/chart/chartOptions'
 
 export default defineComponent({
   components: { Chart },
@@ -41,9 +42,9 @@ export default defineComponent({
         return
 
       const nEvent = await chart.pointer.normalize(event)
-      let date = chart.series[0].searchPoint(nEvent, true)?.date || chart.series[1].searchPoint(nEvent, true)?.date || chart.series[2].searchPoint(nEvent, true)?.date
+      let date = chart.series[0]?.searchPoint(nEvent, true)?.date || chart.series[1]?.searchPoint(nEvent, true)?.date || chart.series[2]?.searchPoint(nEvent, true)?.date
       setTimeout(() => {
-        date = chart.series[0].searchPoint(nEvent, true)?.date || chart.series[1].searchPoint(nEvent, true)?.date || chart.series[2].searchPoint(nEvent, true)?.date
+        date = chart.series[0]?.searchPoint(nEvent, true)?.date || chart.series[1]?.searchPoint(nEvent, true)?.date || chart.series[2]?.searchPoint(nEvent, true)?.date
         if (date) {
           if ($store.state.filter.period === 'all')
             $store.dispatch('filter/setPeriod', 'year')
@@ -90,6 +91,8 @@ export default defineComponent({
       const trnsItems = this.$store.state.trns.items
       const categoriesItems = this.$store.state.categories.items
       const walletsItems = this.$store.state.wallets.items
+      const baseCurrencyCode = this.$store.state.currencies.base
+      const rates = this.$store.state.currencies.rates
       const storeFilter = this.$store.state.filter
       const transferCategoriesIds = getTransferCategoriesIds(categoriesItems)
 
@@ -108,8 +111,13 @@ export default defineComponent({
         // count total period
         const periodDate = this.$day().startOf(periodName).subtract(index, periodName).valueOf()
 
-        const categoriesIds = storeFilter.catsIds.length > 0 ? getCatsIds(storeFilter.catsIds, categoriesItems) : null
-        const walletsIds = storeFilter.walletsIds.length > 0 ? storeFilter.walletsIds : null
+        // TODO: move it to a separate function getFilterParams
+        const categoriesIds = storeFilter.catsIds.length > 0
+          ? getCategoriesIds(storeFilter.catsIds, categoriesItems)
+          : null
+        const walletsIds = storeFilter.walletsIds.length > 0
+          ? storeFilter.walletsIds
+          : null
 
         const trnsIds = getTrnsIds({
           trnsItems,
@@ -120,6 +128,8 @@ export default defineComponent({
         })
 
         const { incomeTransactions, expenseTransactions, sumTransactions } = getTotal({
+          baseCurrencyCode,
+          rates,
           trnsIds,
           trnsItems,
           walletsItems,
@@ -174,8 +184,6 @@ export default defineComponent({
         }
       }
 
-      const fakeLineDate = expenseData.map(i => ({ date: i.date, y: periodsTotalIncome / periods || periodsTotalExpense / periodsExpense }))
-
       const data = {
         series: [{
           // Income
@@ -199,37 +207,24 @@ export default defineComponent({
           marker: {
             lineColor: 'var(--c-expense-1)',
           },
-        }, {
-          // Fake data to make good hover on bar chart
-          zIndex: 1,
-          visible: true,
-          type: 'line',
-          name: '',
-          color: 'transparent',
-          data: fakeLineDate,
-          marker: {
-            enabled: false,
-            symbol: 'circle',
-            radius: 0,
-            lineWidth: 0,
-            states: {
-              hover: {
-                fillColor: 'transparent',
-                lineColor: 'transparent',
-                lineWidth: 0,
-              },
-            },
-          },
-          dataLabels: {
-            enabled: false,
-          },
         }],
         categories,
         averageIncome: periodsTotalIncome / periods,
         averageExpense: periodsTotalExpense / periodsExpense,
       }
 
-      const tooltip = this.$store.state.ui.pc ? { ...chartOptions.tooltip } : { enabled: false }
+      // Tooltip
+      let tooltip = { enabled: false }
+      if (this.$store.state.ui.pc) {
+        tooltip = {
+          ...chartOptions.tooltip,
+          formatter() {
+            return this.points.reduce((s, point) => {
+              return `${s}<br/>${point.series.name}: ${formatAmount(point.y, baseCurrencyCode)} ${getCurrencySymbol(baseCurrencyCode)}`
+            }, this.x)
+          },
+        }
+      }
 
       const plotLines = []
       // Expense
@@ -283,6 +278,9 @@ export default defineComponent({
             dataLabels: {
               ...chartOptions.plotOptions.series.dataLabels,
               enabled: this.isShowDataLabels,
+              formatter() {
+                return formatAmount(this.y, baseCurrencyCode)
+              },
             },
           },
         },
