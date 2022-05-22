@@ -11,7 +11,67 @@ export default {
     return false
   },
 
-  lastCreatedTrnId(_state, getters, rootState) {
+  /**
+    * Return total amounts of trnsIds
+    * * Refactor: params should be Object
+    *
+    * @param {Array} trnsIds
+    * @return {Object} return
+    * @return {String} return.expenses
+    * @return {String} return.incomes
+    * @return {String} return.total
+  */
+  getTotalOfTrnsIds: (_state, _getters, rootState, rootGetters) => (trnsIds, inculdeTrnasfers = false, isConvertToBase = true, walletId) => {
+    const trns = rootState.trns.items
+    const currencies = rootState.currencies.rates
+    const wallets = rootState.wallets.items
+    const baseCurrency = rootState.currencies.base
+    const transferCategoryId = rootGetters['categories/transferCategoryId']
+
+    let expenses = 0
+    let incomes = 0
+
+    for (const key of trnsIds) {
+      const trn = trns[key]
+      if (trn && (inculdeTrnasfers || trn.categoryId !== transferCategoryId)) {
+        // Transaction
+        if (trn.type !== 2) {
+          const wallet = wallets[trn.walletId]
+          if (!wallet && currencies)
+            return
+
+          let amount = 0
+          isConvertToBase && wallet.currency !== baseCurrency
+            ? amount = Math.abs(trn.amount / currencies[wallet.currency])
+            : amount = trn.amount
+
+          trn.type === 1
+            ? incomes = incomes + amount
+            : expenses = expenses + amount
+        }
+
+        // Transfer
+        if (trn.type === 2 && inculdeTrnasfers) {
+          if (walletId === trn.walletFromId || walletId === trn.expenseWalletId)
+            expenses = expenses + (trn.expenseAmount ? trn.expenseAmount : trn.amount)
+
+          if (walletId === trn.walletToId || walletId === trn.incomeWalletId)
+            incomes = incomes + (trn.incomeAmount ? trn.incomeAmount : trn.amount)
+        }
+      }
+    }
+    return {
+      expense: Math.abs(+expenses.toFixed(0)),
+      income: Math.abs(+incomes.toFixed(0)),
+      sum: parseInt((incomes - expenses).toFixed(0)),
+      // @deprecated
+      expenses: Math.abs(+expenses.toFixed(0)),
+      incomes: Math.abs(+incomes.toFixed(0)),
+      total: parseInt((incomes - expenses).toFixed(0)),
+    }
+  },
+
+  lastCreatedTrnId(state, getters, rootState, rootGetters) {
     if (!getters.hasTrns)
       return
 
