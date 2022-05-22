@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "finapp-17474"
-  }
+    "default": "finapp-17474",
+    "prod": "serfin-2022"
+  },
+  "targets": {}
 }
