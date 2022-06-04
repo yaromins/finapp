@@ -26,7 +26,8 @@ export default function useWallets() {
       const isReconciled = isUnderReconciliation && Math.abs(r13n.endingBalanceAmount - amount) <0.01
       acc[id] = {
         ...$store.state.wallets.items[id],
-        amount: $store.getters['wallets/walletsTotal'][id],
+        amount,
+        isUnderReconciliation,
         isReconciled
       }
       return acc
