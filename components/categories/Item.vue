@@ -1,9 +1,9 @@
 <script>
-import useFilter from '~/modules/filter/useFilter'
+import useFilter from '~/components/filter/useFilter'
 
 export default defineComponent({
   props: {
-    activeItemId: { type: String, default: null },
+    activeItemId: { type: String || 0, default: null },
     category: { type: Object, required: true },
     id: { type: String, required: true },
     isHideParentCategory: { type: Boolean, default: false },
@@ -29,6 +29,7 @@ export default defineComponent({
         return
       }
 
+      // TODO: useFilter
       setFilterCatsId(props.id)
       $store.commit('filter/setFilterDateNow')
       $store.dispatch('ui/setActiveTabStat', 'details')
@@ -45,7 +46,7 @@ export default defineComponent({
 </script>
 
 <template lang="pug">
-.cursor-pointer.py-2.px-3.gap-x-3.flex.items-center.rounded-md.bg-skin-item-main-bg.hocus_bg-skin-item-main-hover(
+.cursor-pointer.py-2.px-2.gap-x-3.flex.items-center.rounded-md.bg-skin-item-main-bg.hocus_bg-skin-item-main-hover(
   v-if="category"
   :class="{ '!cursor-default !bg-skin-item-main-active': activeItemId === id }"
   @click="onClickItem"

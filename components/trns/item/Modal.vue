@@ -1,8 +1,9 @@
 <script lang="ts">
-import useFilter from '~/modules/filter/useFilter'
+import useFilter from '~/components/filter/useFilter'
 import useCalculator from '~/components/trnForm/calculator/useCalculator'
 import useTrn from '~/components/trns/item/useTrn'
 
+// TODO: useFilter
 export default {
   setup() {
     const { $store } = useNuxtApp()
@@ -62,7 +63,7 @@ export default {
       this.$store.dispatch('ui/setActiveTabStat', 'details')
     },
 
-    handleDublicateTrn() {
+    handleDuplicateTrn() {
       const trnId = this.trnId
       this.$store.dispatch('trnForm/openTrnForm', { action: 'duplicate', trnId })
       this.$store.commit('trns/hideTrnModal')
@@ -138,9 +139,9 @@ Portal(
             )
 
             ModalButton(
-              :name="$t('base.dublicate')"
+              :name="$t('base.duplicate')"
               icon="mdi mdi-content-copy"
-              @onClick="handleDublicateTrn"
+              @onClick="handleDuplicateTrn"
             )
 
             ModalButton(

@@ -1,6 +1,5 @@
 import type { ComputedRef } from '@vue/composition-api'
-import type { WalletID, WalletItemWithAmount } from '~/components/wallets/types'
-import type { CurrencyCode } from '~/components/currencies/types'
+import type { WalletID, WalletItem, WalletItemWithAmount } from '~/components/wallets/types'
 
 export default function useWallets() {
   const { $store } = useNuxtApp()
@@ -17,41 +16,37 @@ export default function useWallets() {
    */
   const walletsItemsSorted = computed<Record<WalletID, WalletItemWithAmount>>(() => {
     const walletsIdsSorted: WalletID[] = $store.getters['wallets/walletsSortedIds']
-    let wallets: Record<WalletID, WalletItemWithAmount> = {}
 
-    for (const walletId of walletsIdsSorted) {
-      const amount = $store.getters['wallets/walletsTotal'][walletId]
-      const r13n = $store.state.wallets.r13nItems[walletId]
+    // TODO: check A
+    return walletsIdsSorted.reduce((acc, id) => {
+      acc[id] ??= []
+      const amount = $store.getters['wallets/walletsTotal'][id]
+      const r13n = $store.state.wallets.r13nItems[id]
       const isUnderReconciliation = r13n != undefined
-      const isReconciled = isUnderReconciliation && 
-        Math.abs(r13n.endingBalanceAmount - amount) <0.01
-      wallets = {
-        ...wallets,
-        [walletId]: {
-          ...$store.state.wallets.items[walletId],
-          isUnderReconciliation,
-          isReconciled,
-          amount,
-        },
+      const isReconciled = isUnderReconciliation && Math.abs(r13n.endingBalanceAmount - amount) <0.01
+      acc[id] = {
+        ...$store.state.wallets.items[id],
+        amount: $store.getters['wallets/walletsTotal'][id],
+        isReconciled
       }
-    }
-
-    return wallets
+      return acc
+    }, {})
   })
 
   /**
    * Wallets currencies
    */
   const walletsCurrencies = computed(() => {
-    const currencies: CurrencyCode[] = []
+    const walletsIdsSorted: WalletID[] = $store.getters['wallets/walletsSortedIds']
+    const walletsItems: Record<WalletID, WalletItem> = $store.state.wallets.items
 
-    for (const walletId in walletsItemsSorted.value) {
-      const walletCurrency = walletsItemsSorted.value[walletId].currency
-      if (!currencies.includes(walletCurrency))
-        currencies.push(walletCurrency)
-    }
-
-    return currencies
+    // TODO: check A
+    return walletsIdsSorted.reduce((acc, id) => {
+      const currency = walletsItems[id].currency
+      if (!acc.includes(currency))
+        acc.push(currency)
+      return acc
+    }, [])
   })
 
   return {

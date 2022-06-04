@@ -1,44 +1,43 @@
-<script>
-import useFilter from '~/modules/filter/useFilter'
+<script setup lang="ts">
+import type { CategoryID, CategoryItem } from '~/components/categories/types'
+import useFilter from '~/components/filter/useFilter'
+import type { TrnType } from '~/components/trns/types'
+import useStatPage from '~/components/stat/useStatPage'
 
-export default {
-  props: {
-    biggest: { type: Number, required: true },
-    category: { type: Object, required: true },
-    categoryId: { type: String, required: true },
-    total: { type: Number, required: true },
-    type: { type: Number, required: true },
-  },
+const props = defineProps<{
+  biggest: number
+  total: number
+  type: TrnType
+  category: CategoryItem
+  categoryId: CategoryID
+}>()
 
-  setup() {
-    const { setFilterCatsId } = useFilter()
+const { $store } = useNuxtApp()
+const { statPage } = useStatPage()
+const { setFilterCatsId } = useFilter()
+const isShowInside = ref(false)
 
-    return {
-      setFilterCatsId,
-    }
-  },
+const isCategoryHasChildren = computed(() =>
+  $store.getters['categories/isCategoryHasChildren'](props.categoryId))
 
-  data() {
-    return {
-      isShowInside: false,
-    }
-  },
-
-  computed: {
-    styles() {
-      return {
-        width: `${Math.abs(this.total) / Math.abs(this.biggest) * 100}%`,
-        background: this.category.color,
-      }
-    },
-  },
-
-  methods: {
-    toggleShowInside() {
-      this.isShowInside = !this.isShowInside
-    },
-  },
+function toggleShowInside() {
+  isShowInside.value = !isShowInside.value
 }
+
+const trnsIds = computed(() => {
+  if (isCategoryHasChildren.value)
+    return []
+
+  const trnsItems = $store.state.trns.items
+  const trnsIds = statPage.current.trnsIds
+    .filter((id) => {
+      const trn = trnsItems[id]
+      return trn.type === props.type && trn.categoryId === props.categoryId
+    })
+    .sort((a, b) => trnsItems[b].date - trnsItems[a].date)
+
+  return trnsIds
+})
 </script>
 
 <template lang="pug">
@@ -71,14 +70,14 @@ export default {
     @click.stop=""
   )
     TrnsList(
-      :income="type === 1"
-      :expense="type === 0"
-      :categoryId="categoryId"
-      ui="stat"
+      :isShowGroupDate="false"
+      :trnsIds="trnsIds"
+      uiCat
     )
 </template>
 
 <style lang="stylus">
+// TODO: style
 .statItemChild
   .trnItem._stat
     padding-right $m5

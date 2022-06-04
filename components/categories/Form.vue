@@ -43,18 +43,18 @@ function findCategoryWithThisColor(color) {
   if (!categoriesItems)
     return false
 
-  const categoryIdWithThisColor = $store.getters['categories/categoriesRootIds']?.find(id => categoriesItems[id]?.color === color)
+  const categoryIdWithThisColor = $store.getters['categories/categoriesRootIds']
+    ?.find(id => categoriesItems[id]?.color === color)
 
   if (categoryIdWithThisColor)
     return categoriesItems[categoryIdWithThisColor]?.icon
 }
 
 /**
- * Get child categoreies ids
- *
- * @param categoryId
+ * Get child categories ids
  */
-function getChildCategoriesIds(categoryId) {
+function getChildCategoriesIds(categoryId: CategoryID) {
+  // TODO: always return array
   if (!categoryId)
     return false
 
@@ -63,6 +63,7 @@ function getChildCategoriesIds(categoryId) {
   const ids = []
 
   if (category?.parentId === 0) {
+    // TODO: filter
     for (const id in categoriesItems) {
       if (categoriesItems[id].parentId === categoryId)
         ids.push(id)
@@ -163,7 +164,7 @@ async function onSave() {
 
 <template lang="pug">
 div
-  .pb-8.px-3
+  .pb-8.px-2
     UiTabs
       UiTabsItem(
         :isActive="activeTab === 'data'"
@@ -188,7 +189,7 @@ div
 
   //- Content
   //-----------------------------------
-  .px-3.max-w-md
+  .px-2.max-w-md
     //- Data
     //-----------------------------------
     template(v-if="activeTab === 'data'")
@@ -265,14 +266,14 @@ div
         .p-4 You can not change parent category because edited category has childs categories.
 
       template(v-if="isAllowChangeParent")
-        .cursor-pointer.mb-4.py-3.px-3.gap-x-3.flex-center.rounded-md.text-center.bg-skin-item-main-bg.hocus_bg-skin-item-main-hover(
+        .cursor-pointer.mb-4.py-3.px-2.gap-x-3.flex-center.rounded-md.text-center.bg-skin-item-main-bg.hocus_bg-skin-item-main-hover(
           :class="{ '!cursor-default !bg-skin-item-main-active': categoryForm.parentId === 0 }"
           @click="emit('updateValue', 'parentId', 0)"
         ) {{ $t('categories.form.parent.no') }}
 
         CategoriesList(
           :activeItemId="categoryForm.parentId"
-          :ids="$store.getters['categories/categoriesForBeParent'].filter(cId => cId !== categoryId)"
+          :ids="$store.getters['categories/categoriesForBeParent'].filter(id => id !== categoryId)"
           :slider="() => ({})"
           class="!gap-x-1"
           @onClick="onParentSelect"

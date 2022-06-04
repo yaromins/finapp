@@ -5,13 +5,14 @@ export default {
       for (const itemId of Object.keys(items))
         freezedItems[itemId] = Object.freeze(items[itemId])
     }
+
     state.items = {
       ...freezedItems,
       transfer: {
         color: 'var(--c-black-1)',
         icon: 'mdi mdi-repeat',
         name: 'transfer',
-        order: 0,
+        order: 998,
         parentId: 0,
         childIds: [],
         showInLastUsed: false,
@@ -22,7 +23,7 @@ export default {
         color: 'var(--c-black-1)',
         icon: 'mdi mdi-debian',
         name: 'unclassified',
-        order: 0,
+        order: 999,
         parentId: 0,
         childIds: [],
         showInLastUsed: false,

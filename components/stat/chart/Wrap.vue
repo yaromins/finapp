@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useFilter from '~/modules/filter/useFilter'
+import useFilter from '~/components/filter/useFilter'
 import useStatChart from '~/components/stat/useStatChart'
 
 const { $store } = useNuxtApp()
@@ -17,7 +17,7 @@ const chartType = computed(() => {
 </script>
 
 <template lang="pug">
-.h-48(v-if="chartState.show.expense || chartState.show.income")
+.h-48
   LazyStatChartView(
     :categoryId="filter.categoryId"
     :chartType="chartType"

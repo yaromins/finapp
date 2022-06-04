@@ -14,11 +14,11 @@ const categoryForm = ref({
   color: category.value?.color || random(allColors),
   icon: category.value?.icon || random(random(icons)),
   name: category.value?.name || null,
-  order: category.value?.order || 1,
-  parentId: category.value?.parentId || 0,
-  showInLastUsed: category.value?.showInLastUsed !== undefined ? category.value.showInLastUsed : true,
-  showInQuickSelector: category.value?.showInQuickSelector !== undefined ? category.value.showInQuickSelector : false,
-  showStat: category.value?.showStat !== undefined ? category.value.showStat : true,
+  order: category.value?.order ?? 1,
+  parentId: category.value?.parentId ?? 0,
+  showInLastUsed: category.value?.showInLastUsed ?? true,
+  showInQuickSelector: category.value?.showInQuickSelector ?? false,
+  showStat: category.value?.showStat ?? true,
 })
 
 const parentCategory = computed(() => {
@@ -56,24 +56,27 @@ UiPage(v-if="category")
         @click='navigate'
       )
         UiHeaderTitle
-          .pb-1.text-xs.font-medium.text-skin-item-base-down
+          .pt-1.text-xs.font-medium.text-skin-item-base-down
             | {{ $t('categories.title') }}
             template(v-if="parentCategory")
               |
               | • {{ parentCategory.name }}
 
-          .flex.items-center.gap-4
+          .pb-1.flex.items-center.gap-4
             | {{ categoryForm.name }}
-            .w-8.h-8.rounded-full.flex-center.text-xl.text-skin-icon-base(:style="{ background: categoryForm.color }")
+            .w-8.h-8.rounded-full.flex-center.text-xl.text-skin-icon-base(
+              :style="{ background: categoryForm.color }"
+            )
               div(:class="categoryForm.icon")
 
     template(#actions)
       CategoriesDelete(:categoryId="categoryId")
 
-  CategoriesForm(
-    :categoryId="categoryId"
-    :categoryForm="categoryForm"
-    @updateValue="updateValue"
-    @afterSave="afterSave"
-  )
+  .mt-3
+    CategoriesForm(
+      :categoryId="categoryId"
+      :categoryForm="categoryForm"
+      @updateValue="updateValue"
+      @afterSave="afterSave"
+    )
 </template>

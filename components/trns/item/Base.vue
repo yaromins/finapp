@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { TrnID } from '~/components/trns/types'
 import useCalculator from '~/components/trnForm/calculator/useCalculator'
-import useFilter from '~/modules/filter/useFilter'
+import useFilter from '~/components/filter/useFilter'
 import useTrn from '~/components/trns/item/useTrn'
 
 const props = defineProps<{
   trnId: TrnID
   slider: any
 }>()
+const emit = defineEmits(['onClickEdit'])
 
 const { $store } = useNuxtApp()
 const { setExpression } = useCalculator()
@@ -31,8 +32,10 @@ const actions = {
 
     setExpression(trnItem.value.type === 2 && trnItem.value.incomeAmount ? trnItem.value.incomeAmount : trnItem.value.amount)
     $store.dispatch('trnForm/openTrnForm', { action: 'edit', trnId: trnItem.value.id })
+    emit('onClickEdit', props.trnId)
   },
 
+  // TODO: useFilter
   onSetFilter: (event) => {
     if (props.slider)
       return

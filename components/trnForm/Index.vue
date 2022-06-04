@@ -203,7 +203,7 @@ function handleSubmitForm() {
     .swiper-wrapper
       //- History
       .swiper-slide(:style="{ height: maxHeight }")
-        TrnFormTrns(
+        TrnFormTrnsSlide(
           v-if="sliderObj"
           :slider="sliderObj"
         )
@@ -213,7 +213,7 @@ function handleSubmitForm() {
         .scroll.scrollerBlock(:style="{ maxHeight: `${$store.state.ui.height}px` }")
           .subTitle.text-center.pt-5.pb-2.text-xs
             template(v-if="$store.state.trnForm.values.trnId") {{ $t('trnForm.titleEditTrn') }}
-            template(v-if="!$store.state.trnForm.values.trnId") {{ $t('trnForm.titleCreateTrn') }}
+            template(v-if="!$store.state.trnForm.values.trnId") {{ $t('trnForm.createTrn') }}
 
           TrnFormTypes
           TrnFormAmount(v-if="!isTransfer || isTransfer && isSameCurrency")
@@ -269,12 +269,12 @@ function handleSubmitForm() {
                         )
 
           //- Favorite categories
-          .pb-7(v-if="$store.getters['categories/quickSelectorCategoriesIds'] && $store.getters['categories/quickSelectorCategoriesIds'].length > 0")
+          .pb-7(v-if="$store.getters['categories/favoriteCategoriesIds'] && $store.getters['categories/favoriteCategoriesIds'].length > 0")
             .subTitle.text-center.pb-2.text-xs {{ $t('categories.favoriteTitle') }} {{ $t('categories.title') }}
             .px-3
               CategoriesList(
                 v-if="sliderObj"
-                :ids="$store.getters['categories/quickSelectorCategoriesIds']"
+                :ids="$store.getters['categories/favoriteCategoriesIds']"
                 :activeItemId="$store.state.trnForm.values.categoryId"
                 :slider="sliderObj"
                 class="!gap-x-1"

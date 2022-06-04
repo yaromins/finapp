@@ -51,9 +51,6 @@ export default defineNuxtConfig({
   components: [{
     path: '~/components/',
     extensions: ['vue'],
-  }, {
-    path: '~/modules/',
-    extensions: ['vue'],
   }],
 
   loading: false,
