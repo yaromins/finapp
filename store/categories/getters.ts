@@ -59,10 +59,15 @@ export default {
     if (!getters.hasCategories)
       return []
 
-    return state.items[categoryId]?.childIds || []
+    const category: CategoryItem = state.items[categoryId]
+
+    if (category?.parentId === 0)
+      return Object.keys(state.items).filter(id => state.items[id]?.parentId === categoryId)
+
+    return []
   },
 
-  lastUsedCategoriesIdsByDate(state, getters, rootState, rootGetters) {
+  recentCategoriesIds(state, getters, rootState, rootGetters) {
     if (!getters.hasCategories || !rootGetters['trns/hasTrns'])
       return []
 
