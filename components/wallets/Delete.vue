@@ -2,10 +2,10 @@
 import { getTrnsIds } from '~/components/trns/getTrns'
 import { random, successEmo } from '~/assets/js/emo'
 import { removeData } from '~/services/firebase/api'
-import type { WalletID } from '~/components/wallets/types'
+import type { WalletId } from '~/components/wallets/types'
 
 const props = defineProps<{
-  walletId: WalletID
+  walletId: WalletId
 }>()
 const { walletId } = toRefs(props)
 
@@ -43,7 +43,7 @@ async function onDeleteConfirm() {
 
   // Give some time to complete redirect
   setTimeout(async () => {
-    await this.$store.dispatch('trns/deleteTrnsByIds', trnsIdsS)
+    await $store.dispatch('trns/deleteTrnsByIds', trnsIdsS)
     removeData(`users/${uid}/accounts/${walletIdS}`)
       .then(() => {
         $notify({

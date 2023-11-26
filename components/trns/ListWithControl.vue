@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { TrnID, TrnItem, TrnType } from '~/components/trns/types'
+import type { TrnId, TrnItem, TrnType } from '~/components/trns/types'
 import useTrns from '~/components/trns/useTrns'
 import useStatPage from '~/components/stat/useStatPage'
 
 const props = withDefaults(defineProps<{
-  trnsIds: TrnID[]
+  trnsIds: TrnId[]
   trnsClassNames?: string
   defaultFilterTrnsPeriod?: string
   isFilterByDay?: boolean
 }>(), {
-  trnsClassNames: ' grid md_grid-cols-2 md_gap-x-20',
+  trnsClassNames: 'grid md_grid-cols-2 md_gap-x-20',
 })
 const emit = defineEmits(['onClickEdit'])
 
@@ -30,7 +30,7 @@ const filteredTrnsIds = computed(() => {
   if (filterTrnsType.value === null)
     return trnsIds
 
-  const trnsItems: Record<TrnID, TrnItem> = $store.state.trns.items
+  const trnsItems: Record<TrnId, TrnItem> = $store.state.trns.items
   return trnsIds.filter(id => trnsItems[id].type === filterTrnsType.value)
 })
 
@@ -47,12 +47,13 @@ function onClickEdit(props) {
 
 <template lang="pug">
 div
-  //- Title
-  .pb-2.flex.items-center.justify-between.gap-2.text-lg.text-skin-item-base(
+  //- Header
+  .pb-2.flex.items-center.justify-between.gap-2(
     v-if="trnsIds.length > 0 || defaultFilterTrnsPeriod"
     class="!pb-3"
   )
-    .flex.gap-2.leading-none.font-nunito.font-semibold
+    //- Title
+    .flex.gap-2.leading-none.font-nunito.font-semibold.text-lg.text-skin-item-base
       div {{ $t('trns.inPeriodTitle') }}:
       div {{ trnsCount }}
 

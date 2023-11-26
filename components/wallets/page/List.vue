@@ -1,9 +1,37 @@
 <script setup lang="ts">
+import { useStorage } from '@vueuse/core'
 import useWallets from '~/components/wallets/useWallets'
 
 const { $store } = useNuxtApp()
 const activeTab = computed(() => $store.state.ui.activeTab)
-const { walletsCurrencies } = useWallets()
+const { walletsCurrencies, walletsItemsSorted } = useWallets()
+
+const state = useStorage('finapp.page.wallets', {
+  activeTab: 'all',
+})
+
+const walletsCurrenciesTabs = reactive({
+  currencyCode: computed(() => {
+    if (state.value.activeTab === 'all')
+      return $store.state.currencies.base
+    return state.value.activeTab
+  }),
+
+  onSelect: (v) => {
+    state.value.activeTab = v
+    state.value.activeTab = v
+  },
+
+  wallets: computed(() => {
+    if (state.value.activeTab === 'all')
+      return walletsItemsSorted.value
+
+    return Object.fromEntries(
+      Object
+        .entries(walletsItemsSorted.value)
+        .filter(([_key, value]) => value.currency === state.value.activeTab))
+  }),
+})
 </script>
 
 <script lang="ts">
@@ -27,21 +55,35 @@ UiPage
       UiHeaderLink(@click="$router.push('/wallets/new')")
         UiIconAdd.w-5.h-5.group-hover_text-white
 
-  .pb-6.px-2(v-if="walletsCurrencies.length > 1")
+  //- Base currency
+  .pt-4.pb-12.px-2(v-if="walletsCurrencies.length > 1")
+    .pb-2.text-md.leading-none.font-nunito.font-semibold.text-skin-item-base {{ $t('currenciesBase') }}
     WalletsCurrenciesChanger
 
-  .pb-12.px-2
-    WalletsTotal
+  //- Currencies
+  .px-2
+    .pb-2.text-md.leading-none.font-nunito.font-semibold.text-skin-item-base {{ $t('list') }}
+
+  //- Tabs
+  .pb-4.px-2(v-if="walletsCurrencies.length > 1")
+    UiTabs
+      UiTabsItem(
+        :isActive="state.activeTab === 'all'"
+        @click="walletsCurrenciesTabs.onSelect('all')"
+      ) All
+      UiTabsItem(
+        v-for="currency in walletsCurrencies"
+        :isActive="state.activeTab === currency"
+        @click="walletsCurrenciesTabs.onSelect(currency)"
+        :key="currency"
+      ) {{ currency }}
 
   //- Total
-  .pb-4.px-2(v-if="$store.getters['user/isDevUser']")
-    .flex
-      .cursor-pointer.p-1.px-3.flex.items-center.gap-3.rounded-md.bg-skin-item-main-bg.hocus_bg-skin-item-main-hover(
-        @click="$router.push('/wallets/total')"
-      )
-        .mdi.mdi-poll.text-xl
-        .text-xs.leading-none.text-skin-item-base Total details
-        .mdi.mdi-chevron-right.text-lg.leading-none.text-skin-item-base-down
+  .pb-4.px-2
+    WalletsTotal(
+      :walletsItems="walletsCurrenciesTabs.wallets"
+      :currencyCode="walletsCurrenciesTabs.currencyCode"
+    )
 
   //- List
   //---------------------------------
@@ -75,25 +117,11 @@ UiPage
                 v-if="!walletItem.countTotal && !walletItem.isCredit"
               )
 
-          //- Amount
-          Amount(
-            :amount="walletItem.amount"
-            :currencyCode="walletItem.currency"
-          )
-
-  template(#bottom)
-    .pb-4.px-2.flex.justify-evenly.gap-6
-      //- Sort
-      .cursor-pointer.grow.py-3.px-5.flex-center.rounded-full.text-sm.bg-skin-item-main-bg.hocus_bg-skin-item-main-hover(
-        class="basis-1/2 max-w-[280px]"
-        @click="$store.dispatch('ui/setActiveTab', 'walletsSort')"
-      ) {{ $t('base.sort') }}
-
-      //- Create
-      .cursor-pointer.grow.py-3.px-5.flex-center.rounded-full.text-sm.bg-skin-item-main-bg.hocus_bg-skin-item-main-hover(
-        class="basis-1/2 max-w-[280px]"
-        @click="$router.push('/wallets/new')"
-      ) {{ $t('wallets.new') }}
+        //- Amount
+        Amount(
+          :amount="walletItem.amount"
+          :currencyCode="walletItem.currency"
+        )
 
   //- Sort
   //-----------------------------------
@@ -132,3 +160,13 @@ UiPage
   //-         @closeModal="close"
   //-       )
 </template>
+
+<i18n lang="yaml">
+en:
+  list: List
+  currenciesBase: Base currency
+
+ru:
+  list: Список
+  currenciesBase: Основная валюта
+</i18n>

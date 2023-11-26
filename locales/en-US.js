@@ -64,10 +64,6 @@ export default {
       dark: 'Dark',
       light: 'Light',
     },
-    madeBy: {
-      text: 'Made with',
-      name: 'by Ilya Komichev',
-    },
   },
 
   userLogout: 'Logout',
@@ -102,15 +98,11 @@ export default {
       btn: 'Start',
     },
     create: {
-      text: 'Start creating your own wallets, categories',
+      text: 'Start creating your first wallet and category',
       btn: 'Let\'s go',
     },
-    createFirstWallet: {
-      text: 'Let\'s start with create first Wallet',
-      btn: 'Create wallet',
-    },
     createFirstCategory: {
-      text: 'Great! Now Let\'s create first category',
+      text: 'Great! Now let\'s create a category',
       btn: 'Create category',
     },
   },
@@ -132,7 +124,7 @@ export default {
     showAll: 'Show all wallets',
     showOnly: 'Show only',
     sortTitle: 'Sort wallets',
-    createNewTitle: 'Create wallet',
+    createNewTitle: 'Add wallet',
     editTitle: 'Edit Wallet',
     form: {
       name: {
@@ -142,7 +134,7 @@ export default {
         exist: 'Wallet with same name is exist',
       },
       description: {
-        label: 'Wallet description (not required)',
+        label: 'Wallet description (optional)',
         placeholder: 'Write...',
       },
       colors: {
@@ -176,7 +168,7 @@ export default {
     allTitle: 'All',
     lastUsedTitle: 'Recent',
     favoriteTitle: 'Favorite',
-    createNewTitle: 'Create category',
+    createNewTitle: 'Add category',
     editTitle: 'Edit category',
     form: {
       name: {
@@ -310,7 +302,7 @@ export default {
   buttons: {
     nextTitle: 'Next',
     prevTitle: 'Prev',
-    nextStep: 'Next step',
+    nextStep: 'Continue',
   },
 
   users: {

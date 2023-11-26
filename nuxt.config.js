@@ -4,16 +4,23 @@ export default defineNuxtConfig({
   bridge: {
     nitro: false,
     vite: false,
+    meta: true,
+  },
+
+  // Nuxt3: use this instead of publicRuntimeConfig
+  runtimeConfig: {
+    public: {
+      devEmails: process.env.DEV_EMAILS || [],
+      ratesApiKey: process.env.OPEN_EXCHANGE_RATES,
+    },
   },
 
   publicRuntimeConfig: {
-    devEmails: process.env.DEV_EMAILS || [],
     ratesApiKey: process.env.OPEN_EXCHANGE_RATES,
   },
 
   ssr: false,
   target: 'static',
-  modern: 'client',
   telemetry: false,
 
   vue: {
@@ -63,13 +70,14 @@ export default defineNuxtConfig({
 
   colorMode: {
     classSuffix: '',
-    preference: 'dark',
+    preference: 'system',
   },
 
   modules: [
     '@nuxtjs/color-mode',
     '@nuxtjs/i18n',
     '@nuxtjs/pwa',
+    '@pinia/nuxt',
     'portal-vue/nuxt',
   ],
 
@@ -77,7 +85,7 @@ export default defineNuxtConfig({
     '@nuxtjs/pwa',
     '@nuxtjs/style-resources',
     '@nuxtjs/tailwindcss',
-    'unplugin-vue2-script-setup/nuxt',
+    'nuxt-typed-vuex',
   ],
 
   alias: {
@@ -90,6 +98,14 @@ export default defineNuxtConfig({
 
   router: {
     middleware: ['auth'],
+  },
+
+  pinia: {
+    autoImports: [
+      'defineStore',
+      ['defineStore', 'definePiniaStore'],
+    ],
+    disableVuex: false,
   },
 
   i18n: {

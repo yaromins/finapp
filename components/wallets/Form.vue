@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import generateId from '~/utils/id'
-import type { WalletForm, WalletID } from '~/components/wallets/types'
-import { allColors } from '~/assets/js/colors'
+import { generateId } from '~/utils/generateId'
+import type { WalletForm, WalletId } from '~/components/wallets/types'
 import { getPreparedFormData } from '~/components/wallets/getForm'
 import { saveData } from '~/services/firebase/api'
 
 const props = defineProps<{
-  walletId?: WalletID
+  walletId?: WalletId
   walletForm: WalletForm
 }>()
 
@@ -216,13 +215,10 @@ div(v-if="walletForm")
     background var(--c-item-bd-hover)
 </style>
 
-<i18n lang="json5">
-{
-  "en": {
-    "isCredit": "Credit account"
-  },
-  "ru": {
-    "isCredit": "Кредитный счёт"
-  }
-}
+<i18n lang="yaml">
+en:
+  isCredit: Credit account
+
+ru:
+  isCredit: Кредитный счёт
 </i18n>

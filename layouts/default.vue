@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import { usePointer } from '@vueuse/core'
 import debounce from '~/utils/debounce'
-import detectTouch from '~/assets/js/isTouchDevice'
 import useUIView from '~/components/layout/useUIView'
+import { useTrnForm, useTrnFormStore } from '~/components/trnForm/useTrnForm'
+
+import '~/assets/css/index.css'
+import '~/assets/css/themes.css'
+import '~/assets/css/fullpage.css'
+import '~/assets/css/reset.css'
 
 const { $store } = useNuxtApp()
+const $trnForm = useTrnFormStore()
+const { trnFormCreate } = useTrnForm()
 
 useLazyAsyncData('', async () => {
   const { initUI } = useUIView()
@@ -16,23 +24,20 @@ const keepAliveInclude = [
   'pages/wallets/index.vue',
 ]
 
-/**
- * Update modal
- */
-const isShowUpdateApp = ref(false)
-onMounted(async () => {
-  const workbox = await window.$workbox
-  if (workbox) {
-    workbox.addEventListener('installed', (event) => {
-      isShowUpdateApp.value = event.isUpdate
-    })
-  }
-})
-
-/**
- * Detect touch device
- */
-const isTouchDevice = ref(false)
+// TODO: Put in one separate setup function
+const { pointerType } = usePointer()
+const classes = computed(() => [
+  {
+    mouse: pointerType.value === 'mouse' || !pointerType.value,
+    touch: pointerType.value === 'touch',
+  },
+  `
+    overflow-hidden relative
+    h-full min-w-base
+    font-roboto text-gray-500 dark_text-gray-400 leading-none antialiased
+    bg-skin-layout-main
+  `,
+])
 
 /**
  * Page dimensions
@@ -44,22 +49,20 @@ function getPageDimensions() {
   $store.dispatch('ui/setAppDimensions', { width, height })
 }
 
-const touchClassNames = computed(() => ({
-  isNotTouchDevice: !isTouchDevice.value,
-  isTouchDevice: isTouchDevice.value,
-}))
-
 onMounted(() => {
-  isTouchDevice.value = detectTouch()
   getPageDimensions()
   window.addEventListener('resize', debounce(getPageDimensions, 300))
+})
+
+useHead({
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} - Finapp` : 'Finapp'
+  },
 })
 </script>
 
 <template lang="pug">
-.overflow-hidden.relative.h-full.min-w-base.font-roboto.text-slate-500.dark_text-gray-400.leading-none.antialiased.bg-skin-layout-main(
-  :class="touchClassNames"
-)
+div(:class="classes")
   LayoutModals
 
   PortalTarget(
@@ -77,7 +80,7 @@ onMounted(() => {
       Nuxt(keep-alive :keep-alive-props="{ include: keepAliveInclude }")
 
     .createTrn.hidden.z-10.absolute.right-6.bottom-6.lg_flex(
-      @click="$store.dispatch('trnForm/openTrnForm', { action: 'create' })"
+      @click="trnFormCreate"
     )
       .btn: .mdi.mdi-plus
 
@@ -89,12 +92,6 @@ onMounted(() => {
 
 <style lang="stylus">
 @import '~assets/stylus/index'
-
-.firefoxBackdropFix
-  @supports (not (-webkit-backdrop-filter: none)) and (not (backdrop-filter: none))
-    background theme('colors.dark3') !important
-    /.light &
-      background theme('colors.white') !important
 
 .createTrn
   cursor pointer

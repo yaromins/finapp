@@ -13,6 +13,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        primary: 'rgb(var(--text-primary))',
+        secondary: 'rgb(var(--text-secondary))',
+        main: 'rgb(var(--bg-main))',
+        accent: {
+          default: 'rgb(var(--accent-default))',
+          2: 'rgb(var(--accent-2))',
+          primary: 'rgb(var(--accent-primary))',
+        },
+        foreground: {
+          primary: 'rgba(var(--foreground-primary))',
+          main: 'rgb(var(--foreground-main))',
+          second: 'rgba(var(--foreground-second))',
+          hover: 'rgb(var(--foreground-hover))',
+          active: 'rgb(var(--foreground-active))',
+        },
+        item: {
+          main: 'rgba(var(--item-main))',
+          border: 'rgba(var(--item-border))',
+          hover: 'rgba(var(--item-hover))',
+          primary: 'rgba(var(--item-primary))',
+        },
+
         232323: '#232323',
         blue1: '#58a6ff',
         blue3: '#3a7dff',
@@ -75,7 +97,17 @@ module.exports = {
 
   plugins: [
     plugin(({ addVariant }) => {
-      addVariant('hocus', ['.isNotTouchDevice &:not(._active):hover', '&:not(._active):active'])
+      addVariant('hocus', ['.mouse &:not(._active):hover', '&:not(._active):active'])
+    }),
+    plugin(({ matchUtilities, theme }) => {
+      matchUtilities({
+        size: value => ({
+          width: value,
+          height: value,
+        }),
+      }, {
+        values: theme('width'),
+      })
     }),
   ],
 }

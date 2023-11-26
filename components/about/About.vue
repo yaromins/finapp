@@ -13,6 +13,7 @@ div
 </template>
 
 <style lang="stylus" scoped>
+// TODO: use Ui components
 .title
   font-h1()
   font-size 18px
@@ -29,18 +30,14 @@ div
   fontFamilyNunito()
 </style>
 
-<i18n lang="json5">
-{
-  "en": {
-    "title": "Creators",
-    "author": "Author",
-    "thanks": "Thanks for support"
-  },
+<i18n lang="yaml">
+en:
+  title: Creators
+  author: Author
+  thanks: Thanks for support
 
-  "ru": {
-    "title": "Создатели",
-    "author": "Автор",
-    "thanks": "Спасибо за поддержку"
-  }
-}
+ru:
+  title: Создатели
+  author: Автор
+  thanks: Спасибо за поддержку
 </i18n>

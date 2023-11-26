@@ -2,10 +2,10 @@
 import { getTrnsIds } from '~/components/trns/getTrns'
 import { errorEmo, random, successEmo } from '~/assets/js/emo'
 import { removeData } from '~/services/firebase/api'
-import type { CategoryID } from '~/components/categories/types'
+import type { CategoryId } from '~/components/categories/types'
 
 const props = defineProps<{
-  categoryId: CategoryID
+  categoryId: CategoryId
 }>()
 
 const { $store, $notify } = useNuxtApp()
@@ -57,7 +57,7 @@ async function onDeleteConfirm() {
 
   // Give some time to complete redirect
   setTimeout(async () => {
-    await this.$store.dispatch('trns/deleteTrnsByIds', trnsIdsS)
+    await $store.dispatch('trns/deleteTrnsByIds', trnsIdsS)
     removeData(`users/${uid}/categories/${categoryIdS}`)
       .then(() => {
         $notify({

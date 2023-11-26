@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import _merge from 'lodash.merge'
 import dayjs from 'dayjs'
-import type { ComputedRef, Ref } from '@vue/composition-api'
 import type { PeriodsNamesExceptAll } from '~/components/date/types'
-import type { TrnID, TrnItem } from '~/components/trns/types'
+import type { TrnId, TrnItem } from '~/components/trns/types'
 import useAmount from '~/components/amount/useAmount'
 import { averageLine, baseSeriesItemStyle, options } from '~/components/chart/chartOprions'
 import { getTransferCategoriesIds } from '~/components/categories/getCategories'
@@ -21,13 +20,13 @@ const { $store } = useNuxtApp()
 /**
  * Transactions
  */
-const trnsItems: ComputedRef<Record<TrnID, TrnItem>> = computed(() => $store.state.trns.items)
+const trnsItems = computed<Record<TrnId, TrnItem>>(() => $store.state.trns.items)
 const oldestTrnDate = getOldestTrnDate(trnsItems.value)
 
 /**
  * Config
  */
-const activePeriod: Ref<PeriodsNamesExceptAll> = ref('month')
+const activePeriod = ref<PeriodsNamesExceptAll>('month')
 
 /**
  * Periods
@@ -186,13 +185,13 @@ const chartData = computed(() => _merge(JSON.parse(JSON.stringify(options)), cha
   .my-5
     h1.pb-2 Periods
 
-    UiTabs
-      UiTabsItem(
-        v-for="date in periods"
-        :key="date"
-        :isActive="activePeriod === date"
-        @click="activePeriod = date"
-      ) {{ date }}
+    //- UiTabs
+    //-   UiTabsItem(
+    //-     v-for="date in periods"
+    //-     :key="date"
+    //-     :isActive="activePeriod === date"
+    //-     @click="activePeriod = date"
+    //-   ) {{ date }}
 
   .my-5
     h1 date

@@ -1,6 +1,6 @@
-import type { CategoryID } from '~/components/categories/types'
-import type { TrnID, TrnItem } from '~/components/trns/types'
-import type { WalletID, WalletItem } from '~/components/wallets/types'
+import type { CategoryId } from '~/components/categories/types'
+import type { TrnId, TrnItem } from '~/components/trns/types'
+import type { WalletId, WalletItem } from '~/components/wallets/types'
 import { TrnType } from '~/components/trns/types'
 
 export function getAmountInRate({
@@ -24,11 +24,11 @@ export function getAmountInRate({
 }
 
 interface TotalProps {
-  trnsIds: TrnID[]
-  trnsItems: Record<TrnID, TrnItem>
-  walletsItems: Record<WalletID, WalletItem>
-  transferCategoriesIds?: CategoryID[]
-  walletsIds?: WalletID[]
+  trnsIds: TrnId[]
+  trnsItems: Record<TrnId, TrnItem>
+  walletsItems: Record<WalletId, WalletItem>
+  transferCategoriesIds?: CategoryId[]
+  walletsIds?: WalletId[]
   baseCurrencyCode?: string // TODO: add typings
   rates?: Record<string, number> // TODO: add typings
 }
@@ -84,7 +84,7 @@ export function getTotal(props: TotalProps): TotalReturns {
     }
 
     // Transfer v2
-    if (trn.type === TrnType.Transfer && 'incomeWalletId' in trn) {
+    else if (trn.type === TrnType.Transfer && 'incomeWalletId' in trn) {
       const incomeWallet = walletsItems[trn.incomeWalletId]
       const expenseWallet = walletsItems[trn.expenseWalletId]
       const incomeAmount = getAmount(trn.incomeAmount, incomeWallet.currency)
@@ -109,7 +109,7 @@ export function getTotal(props: TotalProps): TotalReturns {
     }
 
     // Transfer @deprecated
-    if (trn.type === TrnType.Transfer && 'walletFromId' in trn) {
+    else if (trn.type === TrnType.Transfer && 'walletFromId' in trn) {
       const incomeWallet = walletsItems[trn.walletToId]
       const expenseWallet = walletsItems[trn.walletFromId]
       const incomeAmount = getAmount(trn.amountTo, incomeWallet.currency)

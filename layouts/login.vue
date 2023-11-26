@@ -1,21 +1,32 @@
 <script setup lang="ts">
-import detectTouch from '~/assets/js/isTouchDevice'
+import { usePointer } from '@vueuse/core'
+
+import '~/assets/css/index.css'
+import '~/assets/css/themes.css'
+import '~/assets/css/fullpage.css'
+import '~/assets/css/reset.css'
+
 const { $store } = useNuxtApp()
 
-// Detect touch device
-const isTouchDevice = ref(false)
-onMounted(() => { isTouchDevice.value = detectTouch() })
-const touchClassNames = computed(() => ({
-  isNotTouchDevice: !isTouchDevice.value,
-  isTouchDevice: isTouchDevice.value,
-}))
+// TODO: Put in one separate setup function
+const { pointerType } = usePointer()
+const classes = computed(() => [
+  {
+    mouse: pointerType.value === 'mouse' || !pointerType.value,
+    touch: pointerType.value === 'touch',
+  },
+  `
+    overflow-hidden relative
+    h-full min-w-base
+    font-roboto text-gray-600 dark_text-gray-400 antialiased leading-none
+    bg-neutral-100 dark_bg-dark3
+  `,
+])
 </script>
 
 <template lang="pug">
-.font-roboto.text-gray-600.antialiased.leading-none.bg-neutral-100.flex.h-full.min-w-base.overflow-hidden(
-  :class="[touchClassNames, 'dark_text-gray-400 dark_bg-dark3']"
-)
-  transition(name="fadeInSlow" appear)
+div(:class="classes")
+  Transition(name="fadeInSlow" appear)
     Nuxt
 
   Notifications(
