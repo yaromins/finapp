@@ -92,6 +92,7 @@ const actions = {
             )
               Amount(
                 :amount="trnItem.expenseAmount || trnItem.amount"
+                :baseValue="trnItem.expenseBaseValue || trnItem.baseValue"
                 :currencyCode="trnItem.expenseWallet.currency"
                 :type="0"
                 colorize="expense"
@@ -108,6 +109,7 @@ const actions = {
             )
               Amount(
                 :amount="trnItem.incomeAmount || trnItem.amount"
+                :baseValue="trnItem.incomeBaseValue || trnItem.baseValue"
                 :currencyCode="trnItem.incomeWallet.currency"
                 :type="1"
                 colorize="income"
@@ -120,6 +122,7 @@ const actions = {
       )
         Amount(
           :amount="trnItem.amount"
+          :baseValue="trnItem.baseValue"
           :currencyCode="trnItem.wallet.currency"
           :type="trnItem.type"
           colorize="income"

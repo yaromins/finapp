@@ -3,7 +3,8 @@ import useAmount from '~/components/amount/useAmount'
 import { formatAmount, getCurrencySymbol } from '~/components/amount/formatAmount'
 
 const props = withDefaults(defineProps<{
-  amount: number
+  amount: number,
+  baseValue: number
   currencyCode: string
   colorize?: string
   type?: number
@@ -52,7 +53,7 @@ const amountClasses = computed(() => ([{
         :class="alignClasses"
       )
         .text-xs.leading-none(v-if="isShowSign && sign === '-'") {{ sign }}
-        .text-xs.leading-none {{ getAmountInBaseRate({ amount, currencyCode }) }}
+        .text-xs.leading-none {{ baseValue ? formatAmount(baseValue, currencyCode) : getAmountInBaseRate({ amount, currencyCode }) }}
         .text-2xs.leading-none {{ getCurrencySymbol(baseCurrencyCode) }}
 
   //- 0

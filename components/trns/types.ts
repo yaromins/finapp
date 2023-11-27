@@ -29,6 +29,7 @@ interface BaseTrn {
 export interface Transaction extends BaseTrn {
   type: TrnType.Income | TrnType.Expense
   amount: number
+  baseValue: number
   categoryId: CategoryId
   walletId: WalletId
 }
@@ -39,9 +40,11 @@ export interface Transfer extends BaseTrn {
 
   incomeWalletId: WalletId
   incomeAmount: number
+  incomeBaseValue: number
 
   expenseWalletId: WalletId
   expenseAmount: number
+  expenseBaseValue: number
 }
 
 /** @deprecated: use Transfer */

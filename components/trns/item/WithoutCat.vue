@@ -55,6 +55,7 @@ export default defineComponent({
       .cursor-pointer
         Amount(
           :amount="trnItem.amount"
+          :baseValue="trnItem.baseValue"
           :currencyCode="trnItem.wallet.currency"
           :type="trnItem.type"
           colorize="income"

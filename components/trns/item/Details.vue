@@ -143,6 +143,7 @@ function setTrnEdit() {
     )
       Amount(
         :amount="trn.amount"
+        :baseValue="trn.baseValue"
         :currencyCode="wallet.currency"
         :colorize="trn.type === 0 ? 'expense' : 'income'"
         :type="trn.type"
