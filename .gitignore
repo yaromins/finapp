@@ -20,3 +20,5 @@ npm-debug.log*
 sw.*
 yarn-debug.log*
 yarn-error.log*
+services/firebase/config.serfin-2021.js
+services/firebase/config.serfin-2022.js
