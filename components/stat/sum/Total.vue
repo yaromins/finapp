@@ -6,11 +6,11 @@ const statAverage = computed(() => $store.getters['stat/statAverage'])
 
 <template lang="pug">
 .my-4.px-1.bg-white.dark_bg-dark3
-  .pb-2.text-lg.leading-none.font-nunito.font-semibold.text-skin-item-base {{ $t('money.total') }}
+  UiTitle {{ $t('money.total') }}
   .overflow-hidden.overflow-x-auto.scrollbar
-    .flex.items-center
+    .flex.flex-wrap.items-center.gap-1.gap-x-6
       //- Total
-      .pr-6.text-3xl
+      .text-3xl
         Amount(
           :amount="statCurrentPeriod.income.total - statCurrentPeriod.expense.total"
           :colorize="(statCurrentPeriod.income.total - statCurrentPeriod.expense.total) > 0 ? 'income' : 'expense'"
