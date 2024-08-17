@@ -53,7 +53,7 @@ export default {
     const trnsItems: Record<TrnId, TrnItem> = rootState.trns.items
     const transferCategoriesIds = getTransferCategoriesIds(categoriesItems)
 
-    return getters.categoriesRootIds.filter((id: CategoryId) => {
+    return getters.categoriesRootIds().filter((id: CategoryId) => {
       const hasTrnsInCategory = Object.values(trnsItems).some(trn => trn.categoryId === id)
       const isTransferCategory = transferCategoriesIds.includes(id)
 
