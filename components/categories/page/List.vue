@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { $store, nuxt2Context: { i18n } } = useNuxtApp()
-const categoriesRootIds = computed(() => $store.getters['categories/categoriesRootIds'])
+const categoriesRootIds = computed(() => $store.getters['categories/categoriesRootIds']())
 
 useHead({
   title: i18n.t('categories.title'),

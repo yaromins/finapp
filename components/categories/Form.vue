@@ -45,7 +45,7 @@ function findCategoryIconByColor(color) {
   if (!categoriesItems)
     return
 
-  return $store.getters['categories/categoriesRootIds']
+  return $store.getters['categories/categoriesRootIds']()
     ?.find(id => categoriesItems[id]?.color === color)
     ?.icon
 }

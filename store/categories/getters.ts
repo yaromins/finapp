@@ -23,12 +23,28 @@ export default {
   /**
    * Categories root IDs
    */
-  categoriesRootIds(state, getters): CategoryId[] {
+  categoriesRootIds: (state, getters) => (filterByName = '') => {
     if (!getters.hasCategories)
       return []
-
     return Object.keys(state.items)
       .filter(id => state.items[id].parentId === 0)
+      .filter(id => {
+        const filterBy = filterByName.toLowerCase()
+        const category = state.items[id]
+        if (category.name.toLowerCase().includes(filterBy)) {
+          return true
+        } else {
+          const childIds = category.childIds
+          if (childIds) {
+            for (const childId of childIds) {
+              const child = state.items[childId]
+              if (child.name.toLowerCase().includes(filterBy)) {
+                return true
+              }
+            }
+        }
+        return false
+      }})
       .sort((a, b) => state.items[a].name.localeCompare(state.items[b].name))
   },
 

@@ -20,6 +20,7 @@ const emit = defineEmits<{
 
 const { $store } = useNuxtApp()
 
+const searchInput = ref('')
 const categorySelector = ref<CategorySelector>({
   parentId: null,
   select: (id: CategoryId, isForce: boolean) => {
@@ -50,14 +51,22 @@ div
   )
     template(#header)
       template {{ $t('categories.title') }}
+      .px-2
+      input.w-full.m-0.py-2.px-3.rounded-lg.text-base.font-normal.text-item-base.bg-item-main-bg.border.border-solid.border-item-main-hover.placeholder_text-item-base-down.transition.ease-in-out.focus_text-item-base-up.focus_bg-item-main-hover.focus_border-blue3.focus_outline-none(
+        placeholder="Search..."
+        v-model="searchInput"
+        type="text"
+      )
 
     template(#default="{ close }")
+
       .pb-3.px-3
         CategoriesList(
-          :ids="$store.getters['categories/categoriesRootIds']"
+          :ids="$store.getters['categories/categoriesRootIds'](searchInput)"
           class="!gap-x-1"
           @click="categorySelector.select"
         )
+
 
   //- Child Categories
   TrnFormModal(

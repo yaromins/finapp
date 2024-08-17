@@ -6,7 +6,7 @@ const { height } = useWindowSize()
 
 <template lang="pug">
 Portal(to="modal")
-  BaseBottomSheet(
+  BaseTopSheet(
     insideClass="sm_rounded-b-2xl bg-layout-main"
     show
     :maxHeight="height"

@@ -59,7 +59,7 @@ onMounted(() => {
             .pb-1.px-3
               CategoriesList(
                 :activeItemId="$trnForm?.values?.categoryId"
-                :ids="$store.getters['categories/categoriesRootIds']"
+                :ids="$store.getters['categories/categoriesRootIds']()"
                 class="!gap-x-1"
                 @click="onClick"
               )
