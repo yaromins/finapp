@@ -388,6 +388,7 @@ export default defineComponent({
             .info__item drugStyles: {{ drugStyles.transform }}
 </template>
 
+
 <style lang="stylus" scoped>
 .info
   padding 20px
